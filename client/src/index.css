@@ -4,4 +4,22 @@
   line-height: 1.2;
 }
 
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+body {
+
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+
+}
+
 
