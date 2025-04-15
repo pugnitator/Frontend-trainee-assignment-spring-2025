@@ -64,7 +64,7 @@ const Container = styled.main`
   align-items: start;
   flex-grow: 1;
 
-  padding: 50px 30px;
+  padding: 50px var(--content-container-padding-x);
   width: 100%;
 `;
 

@@ -28,4 +28,25 @@ body {
   min-height: 100vh;
 }
 
+ul {
+  list-style: none;
+}
 
+button,
+input,
+textarea {
+  padding: 5px 10px;
+  font: inherit;
+  color: inherit;
+  border-radius: var(--border-radius);
+}
+
+button {
+  min-height: 50px;
+  border: none;
+
+  &:hover{
+    opacity: 80%;
+    cursor: pointer;
+  }
+}
