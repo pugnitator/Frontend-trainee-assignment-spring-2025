@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { PageContentContainer } from "../6_shared/ui/PageContentContainer";
 
 export interface IProject {
   id: number;
@@ -48,25 +49,16 @@ export const Boards = () => {
   ];
 
   return (
-    <Container>
+    <PageContentContainer>
+      <h1 className="visually-hidden">Список проектов</h1>
       <BoardsList>
         {boardArray.map((item: IProject) => (
           <BoardsListItem>{item.name}</BoardsListItem>
         ))}
       </BoardsList>
-    </Container>
+    </PageContentContainer>
   );
 };
-
-const Container = styled.main`
-  display: flex;
-  justify-content: center;
-  align-items: start;
-  flex-grow: 1;
-
-  padding: 50px var(--content-container-padding-x);
-  width: 100%;
-`;
 
 const BoardsList = styled.ul`
   display: flex;
@@ -84,10 +76,10 @@ const BoardsListItem = styled.li`
 
   width: 100%;
   min-height: 60px;
-  padding: 5px 10px;
+  padding: var(--list-item-padding);
 
   border-radius: var(--border-radius);
-  background-color: var(--color-gray);
+  background-color: var(--color-gray-light);
 
   &:hover {
     opacity: 80%;

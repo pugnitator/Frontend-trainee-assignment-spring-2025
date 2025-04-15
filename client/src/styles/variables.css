@@ -1,12 +1,13 @@
 :root {
   --color-light: #ffffff;
-  --color-gray: #ecedf6;
+  --color-gray: #656569;
+  --color-gray-light: #ecedf6;
   --color-dark: #292929;
-  --color-blue: #0078D4;
-  --color-blue-light: #d6f0ff;
+  --color-blue: #0078d4;
   --color-red: #ff6163;
 
   --content-container-padding-x: 30px;
+  --list-item-padding: 5px 10px;
   --border-radius: 10px;
   --header-height: 80px;
 }
