@@ -61,11 +61,10 @@ export const Boards = () => {
 const Container = styled.main`
   display: flex;
   justify-content: center;
-  align-items: center;
-
+  align-items: start;
   flex-grow: 1;
 
-  padding: 20px 30px;
+  padding: 50px 30px;
   width: 100%;
 `;
 
@@ -73,7 +72,7 @@ const BoardsList = styled.ul`
   display: flex;
   flex-direction: column;
   justify-content: start;
-  align-items: center;
+  align-items: start;
   gap: 10px;
 
   width: 100%;
@@ -84,9 +83,13 @@ const BoardsListItem = styled.li`
   align-items: center;
 
   width: 100%;
-  min-height: 50px;
+  min-height: 60px;
   padding: 5px 10px;
 
-  border: 1px solid black;
-  border-radius: 10px;
+  border-radius: var(--border-radius);
+  background-color: var(--color-gray);
+
+  &:hover {
+    opacity: 80%;
+  }
 `;
