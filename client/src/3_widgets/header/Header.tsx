@@ -5,24 +5,37 @@ import {ROUTES} from '../../1_app/routes';
 export const Header = () => {
   return (
     <StyledHeader>
-      <Menu>
-        <HeaderMenuItem text={'Проекты'} path={ROUTES.BOARDS}/>
-        <HeaderMenuItem text={'Задачи'} path={ROUTES.ISSUES}/>
-      </Menu>
-      <CreateTaskButton type='button' onClick={() =>console.log('Открываю модалку')}>Создать задачу</CreateTaskButton>
+      <ContentWrapper>
+        <Menu>
+          <HeaderMenuItem text={'Проекты'} path={ROUTES.BOARDS}/>
+          <HeaderMenuItem text={'Задачи'} path={ROUTES.ISSUES}/>
+        </Menu>
+        <CreateTaskButton type='button' onClick={() =>console.log('Открываю модалку')}>Создать задачу</CreateTaskButton>
+      </ContentWrapper>
     </StyledHeader>
   );
 };
 
 const StyledHeader = styled.header`
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+
+  width: 100%;
   height: var(--header-height);
 
-  padding-inline: var(--content-container-padding-x);
-
   border-bottom: 2px solid var(--color-dark);
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  max-width: 1280px;
+
+  padding-inline: var(--content-container-padding-x);
 `;
 
 const Menu = styled.ul`

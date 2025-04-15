@@ -13,43 +13,30 @@ export const Board = () => {
   };
   return (
     <PageContentContainer>
-      <Wrapper>
         <h1>{project.name}</h1>
         <BoardContainer>
           <Column>
             <h2>Backlog</h2>
             {tasksArray.map((item: ITask) => (
-              <TaskCard {...item} />
+              <TaskCard task={item} />
             ))}
           </Column>
           <Column>
             <h2>In progress</h2>
             {tasksArray.map((item: ITask) => (
-              <TaskCard {...item} />
+              <TaskCard task={item} />
             ))}
           </Column>
           <Column>
             <h2>Done</h2>
             {tasksArray.map((item: ITask) => (
-              <TaskCard {...item} />
+              <TaskCard task={item} />
             ))}
           </Column>
         </BoardContainer>
-      </Wrapper>
     </PageContentContainer>
   );
 };
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: start;
-  gap: 30px;
-
-  width: 100%;
-  height: 100%;
-`;
 
 const BoardContainer = styled.div`
   display: flex;

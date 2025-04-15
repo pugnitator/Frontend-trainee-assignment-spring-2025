@@ -83,5 +83,6 @@ const BoardsListItem = styled.li`
 
   &:hover {
     opacity: 80%;
+    cursor: pointer;
   }
 `;

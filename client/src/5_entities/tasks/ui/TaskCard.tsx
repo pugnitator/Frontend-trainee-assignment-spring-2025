@@ -2,31 +2,45 @@ import styled from "styled-components";
 import { ITask } from "../model/ITask";
 import { truncateText } from "../../../6_shared/utils/truncateText";
 
-export const TaskCard = (task: ITask) => {
+interface TaskCardProp{
+    task: ITask;
+    isShortCard?: boolean;
+}
+
+interface CardProp {
+    isShortCard: boolean;
+}
+
+export const TaskCard = ({task, isShortCard = true}: TaskCardProp) => {
   const { title, description } = task;
+  const maxLength = isShortCard ? 80 : 150;
   return (
-    <Card>
+    <Card isShortCard={isShortCard}>
       <span>{title}</span>
-      <Description>{truncateText({ text: description, maxLength: 80 })}</Description>
+      <Description>{truncateText({ text: description, maxLength: maxLength })}</Description>
     </Card>
   );
 };
 
-const Card = styled.article`
+const Card = styled.article<CardProp>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: start;
-  gap: 10px;
+  gap: 5px;
   
-  height: 110px;
+  height: ${props => props.isShortCard ? '110px' : '60px'};
   width: 100%;
   padding: var(--list-item-padding);
 
   background-color: var(--color-light);
+  border: 1px solid transparent;
   border-radius: var(--border-radius);
 
-  /* border: 2px solid var(--color-blue); */
+  &:hover{
+    border: 1px solid var(--color-blue);
+    cursor: pointer;
+  }
 `;
 
 const Description = styled.span`

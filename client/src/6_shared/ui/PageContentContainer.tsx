@@ -14,11 +14,15 @@ export const PageContentContainer = ({children}: PageContentContainerProp) => {
 
 const Container = styled.main`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: start;
   align-items: start;
+  gap: 30px;
+
   flex-grow: 1;
 
   padding: 50px var(--content-container-padding-x);
   width: 100%;
+  max-width: 1280px;
   height: 100%;
 `;
