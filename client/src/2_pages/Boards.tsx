@@ -1,61 +1,34 @@
 import styled from "styled-components";
 import { PageContentContainer } from "../6_shared/ui/PageContentContainer";
-
-export interface IProject {
-  id: number;
-  name: string;
-  description: string;
-  taskCount: number;
-}
+import { IBoard } from "../5_entities/boards/model/IBoard";
+import { useEffect } from "react";
+import { useAppDispatch } from "../6_shared/hooks/useAppDispatch";
+import { useSelector } from "react-redux";
+import { RootState } from "../5_entities/store";
+import { getBoards } from "../5_entities/boards/api/getBoards";
 
 export const Boards = () => {
-  const boardArray = [
-    {
-      id: 1,
-      name: "Редизайн карточки товара",
-      description: "Обновление UI/UX основных страниц",
-      taskCount: 10,
-    },
-    {
-      id: 2,
-      name: "Оптимизация производительности",
-      description: "Улучшение Core Web Vitals",
-      taskCount: 7,
-    },
-    {
-      id: 3,
-      name: "Рефакторинг API",
-      description: "Оптимизация серверных методов",
-      taskCount: 5,
-    },
-    {
-      id: 4,
-      name: "Миграция на новую БД",
-      description: "Перенос данных на PostgreSQL 15",
-      taskCount: 7,
-    },
-    {
-      id: 5,
-      name: "Автоматизация тестирования",
-      description: "Написание E2E тестов",
-      taskCount: 7,
-    },
-    {
-      id: 6,
-      name: "Переход на Kubernetes",
-      description: "Миграция инфраструктуры",
-      taskCount: 5,
-    },
-  ];
+  const boards = useSelector((state: RootState) => state.boards.list);
+  const isBoardsLoad = useSelector((state: RootState) => state.boards.isLoad);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(getBoards());
+  }, []);
+
+  console.log(boards);
 
   return (
     <PageContentContainer>
       <h1 className="visually-hidden">Список проектов</h1>
-      <BoardsList>
-        {boardArray.map((item: IProject) => (
-          <BoardsListItem>{item.name}</BoardsListItem>
-        ))}
-      </BoardsList>
+      {isBoardsLoad ? (
+        <BoardsList>
+          {boards.map((item: IBoard) => (
+            <BoardsListItem>{item.name}</BoardsListItem>
+          ))}
+        </BoardsList>
+      ) : (
+        "Идет загрузка"
+      )}
     </PageContentContainer>
   );
 };

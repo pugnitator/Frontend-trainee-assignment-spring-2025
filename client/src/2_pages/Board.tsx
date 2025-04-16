@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { PageContentContainer } from "../6_shared/ui/PageContentContainer";
-// import { IProject } from "./Boards";
 import { TaskCard } from "../5_entities/tasks/ui/TaskCard";
 import { ITask } from "../5_entities/tasks/model/ITask";
 
@@ -11,6 +10,7 @@ export const Board = () => {
     description: "Обновление UI/UX основных страниц",
     taskCount: 10,
   };
+  
   return (
     <PageContentContainer>
         <h1>{project.name}</h1>
