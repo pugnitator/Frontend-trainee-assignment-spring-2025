@@ -6,10 +6,12 @@ import {ROUTES} from './routes';
 import { Issues } from "../2_pages/Issues";
 import { Provider } from "react-redux";
 import { store } from "../5_entities/store";
+import { SnackbarProvider } from "notistack";
 
 function App() {
   return (
     <Provider store={store}>
+      <SnackbarProvider maxSnack={3} autoHideDuration={3000}/>
       <Header />
       <Routes>
         <Route path="/" element={<Navigate to={ROUTES.BOARDS} />} />

@@ -6,6 +6,7 @@ import { useAppDispatch } from "../6_shared/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 import { RootState } from "../5_entities/store";
 import { getBoards } from "../5_entities/boards/api/getBoards";
+import Loader from "../6_shared/ui/Loader";
 
 export const Boards = () => {
   const boards = useSelector((state: RootState) => state.boards.list);
@@ -20,18 +21,29 @@ export const Boards = () => {
   return (
     <PageContentContainer>
       <h1 className="visually-hidden">Список проектов</h1>
-      {isBoardsLoad ? (
-        <BoardsList>
-          {boards.map((item: IBoard) => (
-            <BoardsListItem>{item.name}</BoardsListItem>
-          ))}
-        </BoardsList>
-      ) : (
-        "Идет загрузка"
-      )}
+      <ContentWrapper>
+        {isBoardsLoad ? (
+          <BoardsList>
+            {boards.map((item: IBoard) => (
+              <BoardsListItem>{item.name}</BoardsListItem>
+            ))}
+          </BoardsList>
+        ) : (
+          <Loader />
+        )}
+      </ContentWrapper>
     </PageContentContainer>
   );
 };
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  width: 100%;
+`;
 
 const BoardsList = styled.ul`
   display: flex;
