@@ -10,5 +10,6 @@
   --content-container-padding-x: 30px;
   --list-item-padding: 5px 10px;
   --border-radius: 10px;
+  --border-radius-small: 5px;
   --header-height: 80px;
 }

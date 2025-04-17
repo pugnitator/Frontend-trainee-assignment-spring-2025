@@ -1,6 +1,6 @@
-@import './styles/variables.css';
-@import './styles/fonts.css';
-@import './styles/utils.css';
+@import "./styles/variables.css";
+@import "./styles/fonts.css";
+@import "./styles/utils.css";
 
 * {
   margin: 0;
@@ -15,7 +15,7 @@
 }
 
 body {
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
   font-size: 16px;
   font-weight: 500;
   color: var(--color-dark);
@@ -40,14 +40,24 @@ textarea {
   padding: 5px 10px;
   font: inherit;
   color: inherit;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-small);
+  outline: none;
+}
+
+input,
+textarea {
+  border: 1px solid var(--color-gray);
+  &:focus {
+    border: 1px solid var(--color-blue);
+  }
 }
 
 button {
   min-height: 50px;
+  min-width: 100px;
   border: none;
 
-  &:hover{
+  &:hover {
     opacity: 80%;
     cursor: pointer;
   }

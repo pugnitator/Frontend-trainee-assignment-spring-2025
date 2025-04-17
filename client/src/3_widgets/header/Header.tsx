@@ -1,17 +1,36 @@
 import styled from "styled-components";
 import { HeaderMenuItem } from "./HeaderMenuItem";
-import {ROUTES} from '../../1_app/routes';
+import { ROUTES } from "../../1_app/routes";
+import { Modal } from "../modals/Modal";
+import { useSelector } from "react-redux";
+import { RootState } from "../../5_entities/store";
+import { useAppDispatch } from "../../6_shared/hooks/useAppDispatch";
+import { appSliceActions } from "../../1_app/appSlice";
+import { TaskForm } from "../../4_features/forms/TaskForm";
 
 export const Header = () => {
+  const isModalOpen = useSelector((state: RootState) => state.app.isModalOpen);
+  const dispatch = useAppDispatch();
+  const onClickCreateTask = () => {
+    dispatch(appSliceActions.openModal());
+  };
+
   return (
     <StyledHeader>
       <ContentWrapper>
         <Menu>
-          <HeaderMenuItem text={'Проекты'} path={ROUTES.BOARDS}/>
-          <HeaderMenuItem text={'Задачи'} path={ROUTES.ISSUES}/>
+          <HeaderMenuItem text={"Проекты"} path={ROUTES.BOARDS} />
+          <HeaderMenuItem text={"Задачи"} path={ROUTES.ISSUES} />
         </Menu>
-        <CreateTaskButton type='button' onClick={() =>console.log('Открываю модалку')}>Создать задачу</CreateTaskButton>
+        <CreateTaskButton type="button" onClick={onClickCreateTask}>
+          Создать задачу
+        </CreateTaskButton>
       </ContentWrapper>
+      {isModalOpen && (
+        <Modal>
+          <TaskForm />
+        </Modal>
+      )}
     </StyledHeader>
   );
 };
@@ -51,4 +70,4 @@ const CreateTaskButton = styled.button`
 
   color: var(--color-light);
   background-color: var(--color-blue);
-`
+`;

@@ -4,12 +4,7 @@ import { useAppDispatch } from "../../../6_shared/hooks/useAppDispatch";
 import { getTasks } from "../api/getTasks";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-
-export enum TaskStatusEnum {
-  Backlog = "Backlog",
-  InProgress = "InProgress",
-  Done = "Done",
-}
+import { TaskStatusEnum } from "../model/ITask";
 
 export type TaskFilters = {
   status?: TaskStatusEnum[];
@@ -23,10 +18,12 @@ export const useTasks = () => {
   const [search, setSearch] = useState<string | null>(null);
   const [filter, setFilter] = useState<TaskFilters>({});
   const dispatch = useAppDispatch();
+  const refetch = () => dispatch(getTasks());
 
   useEffect(() => {
-    dispatch(getTasks());
+    refetch();
   }, []);
+
 
   const searchTask = (text: string) => {
     setSearch(text.toLowerCase());
@@ -96,6 +93,7 @@ export const useTasks = () => {
     cancelSearchTask,
     addBoardIdFilter,
     addStatusFilter,
-    clearFilters
+    clearFilters,
+    refetch
   };
 };

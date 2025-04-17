@@ -5,9 +5,9 @@ import { TaskCard } from "../5_entities/tasks/ui/TaskCard";
 import { useTasks } from "../5_entities/tasks/hooks/useTasks";
 
 export const Issues = () => {
-  const {tasks, searchTask, cancelSearchTask, addBoardIdFilter, addStatusFilter, clearFilters} = useTasks();
+  const {tasks, searchTask, cancelSearchTask, addBoardIdFilter, addStatusFilter, clearFilters, refetch} = useTasks();
 
-  console.log(tasks);
+  // console.log(tasks);
 
   return (
     <PageContentContainer>

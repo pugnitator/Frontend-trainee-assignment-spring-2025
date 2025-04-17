@@ -1,4 +1,16 @@
-import { BoardId, TaskStatusEnum } from "../hooks/useTasks";
+import { BoardId } from "../hooks/useTasks";
+
+export enum TaskStatusEnum {
+  Backlog = "Backlog",
+  InProgress = "InProgress",
+  Done = "Done",
+}
+
+export enum TaskPriorityEnum {
+  Low = 'Low',
+  Medium = 'Medium',
+  High = 'High'
+}
 
 export interface ITask {
   assignee: {
@@ -11,7 +23,7 @@ export interface ITask {
   boardName: string;
   description: string;
   id: number;
-  priority: string;  //TODO: добавить enum
+  priority: TaskPriorityEnum;
   status: TaskStatusEnum;
   title: string;
 }

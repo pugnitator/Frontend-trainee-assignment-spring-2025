@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { tasksInitialState } from "./model/tasksInitialState";
 import { getTasks } from "./api/getTasks";
 import { ITask } from "./model/ITask";
+import { createTask } from "./api/createTask";
 
 
 const tasksSlice = createSlice({
@@ -24,7 +25,7 @@ const tasksSlice = createSlice({
       })
       .addCase(getTasks.rejected, (state) => {
         state.isLoad = false;
-      });
+      })
   },
 });
 
