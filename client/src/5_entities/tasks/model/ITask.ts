@@ -1,3 +1,5 @@
+import { BoardId, TaskStatusEnum } from "../hooks/useTasks";
+
 export interface ITask {
   assignee: {
     avatarUrl: string;
@@ -5,10 +7,11 @@ export interface ITask {
     fullName: string;
     id: number;
   };
-  boardName?: string;
+  boardId: BoardId;
+  boardName: string;
   description: string;
   id: number;
   priority: string;  //TODO: добавить enum
-  status: string; //TODO: добавить enum
+  status: TaskStatusEnum;
   title: string;
 }

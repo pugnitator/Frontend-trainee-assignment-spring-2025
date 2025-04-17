@@ -14,14 +14,14 @@ const boardsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getBoards.pending, (state, action) => {
+      .addCase(getBoards.pending, (state) => {
         state.isLoad = false;
       })
       .addCase(getBoards.fulfilled, (state, action) => {
         state.list = action.payload as IBoard[];
         state.isLoad = true;
       })
-      .addCase(getBoards.rejected, (state, action) => {
+      .addCase(getBoards.rejected, (state) => {
         state.isLoad = false;
       });
   },
