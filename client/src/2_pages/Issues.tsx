@@ -10,6 +10,7 @@ import { useAppDispatch } from "../6_shared/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 import { RootState } from "../5_entities/store";
 import { appSliceActions } from "../1_app/appSlice";
+import { SearchTaskBar } from "../4_features/SearchTaskBar";
 
 export const Issues = () => {
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
@@ -19,6 +20,8 @@ export const Issues = () => {
     cancelSearchTask,
     addBoardIdFilter,
     addStatusFilter,
+    clearBoardIdFilter,
+    clearStatusFilter,
     clearFilters,
     refetch,
   } = useTasks();
@@ -32,13 +35,21 @@ export const Issues = () => {
 
   const onCloseForm = () => {
     setSelectedTask(null);
-    dispatch(appSliceActions.closeModal())
-  }
+    dispatch(appSliceActions.closeModal());
+  };
 
   return (
     <PageContentContainer>
       <h1 className="visually-hidden"> Список всех задач</h1>
-      <SearchBar>Тут поиск и фильтры</SearchBar>
+      <SearchTaskBar
+        searchTask={searchTask}
+        cancelSearchTask={cancelSearchTask}
+        addBoardIdFilter={addBoardIdFilter}
+        addStatusFilter={addStatusFilter}
+        clearBoardIdFilter={clearBoardIdFilter}
+        clearStatusFilter={clearStatusFilter}
+        clearFilters={clearFilters}
+      />
       <TaskList>
         {tasks.map((item: ITask) => (
           <TaskCard
@@ -51,16 +62,12 @@ export const Issues = () => {
       </TaskList>
       {isModalOpen && selectedTask && (
         <Modal>
-          <TaskForm task={selectedTask} onClose={onCloseForm}/>
+          <TaskForm task={selectedTask} onClose={onCloseForm} />
         </Modal>
       )}
     </PageContentContainer>
   );
 };
-
-const SearchBar = styled.div`
-  background-color: var(--color-gray-light);
-`;
 
 const TaskList = styled.div`
   display: flex;

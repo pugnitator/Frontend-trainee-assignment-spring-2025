@@ -3,12 +3,12 @@ import styled from "styled-components";
 import Select from "react-select";
 
 export interface FormSelectProp {
-  title: string;
+  title?: string;
   errorMessage?: string;
   options: { value: string | number; label: string }[];
   name: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>;
+  control?: Control<any>;
   rules?: RegisterOptions;
   isDisabled?: boolean;
 }
@@ -25,7 +25,7 @@ export const FormSelect = ({
   // console.log("selectData", options);
   return (
     <Container>
-      <label>{title}</label>
+      {title ?? <label>{title}</label>}
       <Controller
         name={name}
         control={control}

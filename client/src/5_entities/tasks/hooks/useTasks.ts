@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { ITask } from "../model/ITask";
 import { useAppDispatch } from "../../../6_shared/hooks/useAppDispatch";
 import { getTasks } from "../api/getTasks";
@@ -25,41 +25,50 @@ export const useTasks = () => {
   }, []);
 
 
-  const searchTask = (text: string) => {
+  const searchTask = (text: string | undefined) => {
+    console.log('searchText', text);
+    if (!text) return;
     setSearch(text.toLowerCase());
   };
 
   const cancelSearchTask = () => {
     setSearch(null);
   };
-
-  const addStatusFilter = (value: TaskStatusEnum) => {
-    setFilter((prev) => {
-      const currentValues = prev.status || [];
-      if (currentValues.includes(value)) return prev;
-      return {
-        ...prev,
-        status: [...currentValues, value],
-      };
-    });
+  const addBoardIdFilter = (values: BoardId[]) => {
+    setFilter((prev) => ({
+      ...prev,
+      boardId: values,
+    }));
   };
 
-  const addBoardIdFilter = (value: BoardId) => {
-    setFilter((prev) => {
-      const currentValues = prev.boardId || [];
-      if (currentValues.includes(value)) return prev;
-      return {
-        ...prev,
-        boardId: [...currentValues, value],
-      };
-    });
+  const clearBoardIdFilter = () => {
+    setFilter((prev) => ({
+      ...prev,
+      boardId: undefined,
+    }));
+  };
+  
+  const addStatusFilter = (values: TaskStatusEnum[]) => {
+    setFilter((prev) => ({
+      ...prev,
+      status: values,
+    }));
+  };
+
+  const clearStatusFilter = () => {
+    setFilter((prev) => ({
+      ...prev,
+      status: undefined,
+    }));
   };
 
   const clearFilters = () => {
     setFilter({});
   };
 
-  const applyFilters = useCallback(() => {
+  const applyFilters = 
+    () => {
+    console.log('apply')
     const searchedList = search
       ? taskList.filter(
           (item: ITask) =>
@@ -67,6 +76,8 @@ export const useTasks = () => {
             item.assignee.fullName.toLowerCase().includes(search)
         )
       : taskList;
+
+      console.log('searchedList', searchedList)
 
     const filteredList = filter
       ? searchedList.filter((item: ITask) => {
@@ -82,10 +93,12 @@ export const useTasks = () => {
         })
       : searchedList;
 
-    return filteredList;
-  }, [taskList, search, filter]);
+    console.log('filteredList', filteredList)
 
-  const tasks = useMemo(() => applyFilters(), [applyFilters]);
+    return filteredList;
+  }
+  const tasks = applyFilters();
+  // console.log('tasks', tasks)
 
   return {
     tasks,
@@ -93,6 +106,8 @@ export const useTasks = () => {
     cancelSearchTask,
     addBoardIdFilter,
     addStatusFilter,
+    clearBoardIdFilter,
+    clearStatusFilter,
     clearFilters,
     refetch
   };

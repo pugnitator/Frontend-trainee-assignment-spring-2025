@@ -26,8 +26,7 @@ import { useEffect, useState } from "react";
 import { updateTask } from "../../5_entities/tasks/api/updateTask";
 import { useNavigate } from "react-router";
 import { ROUTES } from "../../1_app/routes";
-
-//TODO: предзаполнять проект при открытии со страницы проекта + запрет изменения
+import closeIcon from "../../assets/icons/closeIcon.svg";
 
 interface TaskFormProp {
   task?: ITask;
@@ -146,11 +145,14 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
       <h2>{task ? "Редактирование задачи" : "Создание задачи"}</h2>
-      <CancelButton
-        type="button"
-        onClick={() => onClose()}
-      >
-        ❌
+      <CancelButton type="button" onClick={() => onClose()}>
+        <img
+          src={closeIcon}
+          alt="Закрыть форму"
+          width="25px"
+          height="25px"
+          loading="lazy"
+        />
       </CancelButton>
       <FormInput
         register={register("title", {
@@ -218,13 +220,13 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
       <ButtonWrapper>
         {task ? (
           <>
-            <button type="button" onClick={onClickGoToBoard}>
+            <StyledButton type="button" onClick={onClickGoToBoard}>
               Перейти к доске
-            </button>
-            <SubmitButton>Сохранить изменения</SubmitButton>
+            </StyledButton>
+            <SubmitButton type='submit'>Сохранить изменения</SubmitButton>
           </>
         ) : (
-          <SubmitButton>Создать</SubmitButton>
+          <SubmitButton type='submit'>Создать</SubmitButton>
         )}
       </ButtonWrapper>
     </StyledForm>
@@ -247,8 +249,9 @@ const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: start;
-  justify-content: space-between;
-
+  justify-content: center;
+  gap: 20px;
+  padding: 10px 0 0;
   color: var(--color-light);
 `;
 
@@ -266,6 +269,13 @@ const CancelButton = styled.button`
 
   background-color: transparent;
 `;
+
 const SubmitButton = styled.button`
+  width: 100%;
   background-color: var(--color-blue);
 `;
+
+const StyledButton = styled.button`
+  width: 100%;
+  background-color: var(--color-gray);
+`

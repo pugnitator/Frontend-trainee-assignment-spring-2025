@@ -50,6 +50,9 @@ textarea {
   &:focus {
     border: 1px solid var(--color-blue);
   }
+  &::placeholder {
+    color: var(--color-gray)
+  }
 }
 
 button {

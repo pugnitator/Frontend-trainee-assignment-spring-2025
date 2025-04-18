@@ -1,11 +1,11 @@
 :root {
   --color-light: #ffffff;
-  --color-gray: #656569;
+  --color-gray: #86868a;
   --color-gray-light: #ecedf6;
   --color-dark: #292929;
   --color-blue: #0078d4;
   --color-red: #ff6163;
-  --color-green: #43A047;
+  --color-green: #43a047;
 
   --content-container-padding-x: 30px;
   --list-item-padding: 5px 10px;

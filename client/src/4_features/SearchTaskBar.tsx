@@ -1,0 +1,171 @@
+import styled from "styled-components";
+import { BoardId } from "../5_entities/tasks/hooks/useTasks";
+import { useRef, useState } from "react";
+import { TaskStatusEnum } from "../5_entities/tasks/model/ITask";
+import closeIcon from "../assets/icons/closeIcon.svg";
+import searchIcon from "../assets/icons/searchIcon.svg";
+import { useSelector } from "react-redux";
+import { RootState } from "../5_entities/store";
+import { IBoard } from "../5_entities/boards/model/IBoard";
+import { MultiSelectFilter } from "../6_shared/ui/MultiSelectFilter";
+
+interface SearchTaskBarProp {
+  searchTask: (text: string | undefined) => void;
+  cancelSearchTask: () => void;
+  addBoardIdFilter: (value: BoardId[]) => void;
+  addStatusFilter: (value: TaskStatusEnum[]) => void;
+  clearBoardIdFilter: () => void;
+  clearStatusFilter: () => void;
+  clearFilters: () => void;
+}
+
+export const SearchTaskBar = ({
+  searchTask,
+  cancelSearchTask,
+  addBoardIdFilter,
+  addStatusFilter,
+  clearBoardIdFilter,
+  clearStatusFilter,
+  clearFilters,
+}: SearchTaskBarProp) => {
+  const searchRef = useRef<HTMLInputElement>(null);
+  const [searchValue, setSearchValue] = useState<string>("");
+
+  const boardOptions = useSelector((state: RootState) =>
+    state.boards.list.map((item: IBoard) => ({
+      value: item.id,
+      label: item.name,
+    }))
+  );
+  const statusOptions = Object.values(TaskStatusEnum).map((status) => ({
+    value: status,
+    label: status,
+  }));
+
+  const onSearch = () => {
+    const searchValue = searchRef.current?.value;
+    if (searchValue) searchTask(searchValue);
+    else cancelSearchTask();
+  };
+
+  const onCancelSearch = () => {
+    cancelSearchTask();
+    setSearchValue("");
+  };
+
+  const handleBoardChange = (values: (string | number)[]) => {
+    console.log('handleBoardChange вызыван')
+    const boardIds = values as BoardId[];
+    addBoardIdFilter(boardIds);
+  };
+
+  const handleStatusChange = (values: (string | number)[]) => {
+    console.log('handleStatusChange вызыван')
+    const statuses = values as TaskStatusEnum[];
+    addStatusFilter(statuses);
+  };
+
+  return (
+    <Container>
+      <Wrapper>
+        <MultiSelectFilter
+          options={boardOptions}
+          onChange={handleBoardChange}
+          name={"boardId"}
+          placeHolder="Проект"
+        />
+        <MultiSelectFilter
+          options={statusOptions}
+          onChange={handleStatusChange}
+          name={"status"}
+          placeHolder="Статус"
+        />
+      </Wrapper>
+      <Wrapper>
+        <InputWrapper>
+          <SearchInput
+            ref={searchRef}
+            type="text"
+            placeholder="Поиск"
+            value={searchValue ?? ""}
+            onChange={() => setSearchValue(searchRef.current?.value ?? "")}
+          />
+          {searchValue && (
+            <ImageButton type="button" onClick={onCancelSearch}>
+              <img
+                src={closeIcon}
+                alt="Отменить поиск"
+                width="20px"
+                height="20px"
+                loading="lazy"
+              />
+            </ImageButton>
+          )}
+        </InputWrapper>
+        <ImageButton type="button" onClick={onSearch}>
+          <img
+            src={searchIcon}
+            alt="Начать поиск"
+            width="25px"
+            height="25px"
+            loading="lazy"
+          />
+        </ImageButton>
+      </Wrapper>
+    </Container>
+  );
+};
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  height: 60px;
+
+  padding: 5px 30px;
+
+  background-color: var(--color-gray-light);
+  border-radius: var(--border-radius);
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 300px;
+  background-color: var(--color-light);
+  border-radius: var(--border-radius-small);
+  border: 1px solid transparent;
+  &:focus {
+    border: 1px solid var(--color-blue);
+  }
+`;
+
+const ImageButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1px;
+  min-height: 1px;
+  padding: 0 5px;
+
+  line-height: 0.5;
+  background-color: transparent;
+`;
+
+const SearchInput = styled.input`
+  border: none;
+  &:focus {
+    border: none;
+  }
+`;
