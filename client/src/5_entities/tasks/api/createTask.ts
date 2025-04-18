@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../../../1_app/axios config/api";
 import { enqueueSnackbar } from "notistack";
 import { messageVariants } from "../../../6_shared/config/notificationStyles";
-import { ITask } from "../model/ITask";
+import { ITask, TaskStatusEnum } from "../model/ITask";
 import { BoardId } from "../hooks/useTasks";
 
 export interface CreateTaskProp {
@@ -11,6 +11,7 @@ export interface CreateTaskProp {
   description: string;
   priority: string;
   title: string;
+  status?: TaskStatusEnum;
 }
 
 export const createTask = createAsyncThunk<

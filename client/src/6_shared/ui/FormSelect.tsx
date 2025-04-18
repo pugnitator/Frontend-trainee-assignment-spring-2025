@@ -10,6 +10,7 @@ export interface FormSelectProp {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any>;
   rules?: RegisterOptions;
+  isDisabled?: boolean;
 }
 
 export const FormSelect = ({
@@ -19,6 +20,7 @@ export const FormSelect = ({
   name,
   control,
   rules,
+  isDisabled
 }: FormSelectProp) => {
   console.log("selectData", options);
   return (
@@ -40,6 +42,7 @@ export const FormSelect = ({
               }
               placeholder="Выберите вариант"
               isClearable
+              isDisabled={isDisabled}
               menuPlacement="auto"
               styles={{
                 control: (base, state) => ({

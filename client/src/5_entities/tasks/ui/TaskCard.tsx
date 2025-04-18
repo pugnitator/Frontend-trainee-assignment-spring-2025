@@ -5,17 +5,18 @@ import { truncateText } from "../../../6_shared/utils/truncateText";
 interface TaskCardProp{
     task: ITask;
     isShortCard?: boolean;
+    onClick: (task: ITask) => void
 }
 
 interface CardProp {
     isShortCard: boolean;
 }
 
-export const TaskCard = ({task, isShortCard = true}: TaskCardProp) => {
+export const TaskCard = ({task, isShortCard = true, onClick}: TaskCardProp) => {
   const { title, description } = task;
   const maxLength = isShortCard ? 80 : 150;
   return (
-    <Card isShortCard={isShortCard}>
+    <Card isShortCard={isShortCard} onClick={() => onClick(task)}>
       <span>{title}</span>
       <Description>{truncateText({ text: description, maxLength: maxLength })}</Description>
     </Card>

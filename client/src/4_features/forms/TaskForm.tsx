@@ -23,6 +23,11 @@ import { appSliceActions } from "../../1_app/appSlice";
 import { getUsers } from "../../5_entities/users/api/getUsers";
 import { IUser } from "../../5_entities/users/model/IUser";
 import { useEffect, useState } from "react";
+import { updateTask } from "../../5_entities/tasks/api/updateTask";
+import { useNavigate } from "react-router";
+import { ROUTES } from "../../1_app/routes";
+
+//TODO: предзаполнять проект при открытии со страницы проекта + запрет изменения
 
 interface TaskFormProp {
   task?: ITask;
@@ -32,6 +37,7 @@ export const TaskForm = ({ task }: TaskFormProp) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const dispatch = useAppDispatch();
   const { refetch } = useTasks();
+  const navigate = useNavigate();
 
   useEffect(() => {
     getUsers().then((users) => {
@@ -48,12 +54,12 @@ export const TaskForm = ({ task }: TaskFormProp) => {
 
   const form = useForm<CreateTaskProp>({
     defaultValues: {
-      title: "",
-      description: "",
-      boardId: 0,
-      priority: TaskPriorityEnum.Medium,
-      assigneeId: 0,
-      // status?: 0,
+      title: task?.title || "",
+      description: task?.description || "",
+      boardId: task?.boardId || 0,
+      priority: task?.priority || TaskPriorityEnum.Medium,
+      assigneeId: task?.assignee.id || 0,
+      status: task?.status || TaskStatusEnum.Backlog,
     },
   });
 
@@ -82,6 +88,17 @@ export const TaskForm = ({ task }: TaskFormProp) => {
     label: priority,
   }));
 
+  const onClickGoToBoard = () => {
+    if (!task) {
+      enqueueSnackbar("Что-то пошло не так", {
+        style: messageVariants.error,
+      });
+      return;
+    }
+    navigate(ROUTES.BOARD.link(task.boardId));
+    dispatch(appSliceActions.closeModal());
+  };
+
   const onSubmitCreate = async (data: CreateTaskProp) => {
     try {
       await dispatch(createTask(data));
@@ -89,7 +106,7 @@ export const TaskForm = ({ task }: TaskFormProp) => {
       enqueueSnackbar("Задача успешно создана", {
         style: messageVariants.success,
       });
-      dispatch(appSliceActions.closeModal())
+      dispatch(appSliceActions.closeModal());
     } catch (error) {
       enqueueSnackbar("Не удалось создать задачу", {
         style: messageVariants.error,
@@ -98,9 +115,38 @@ export const TaskForm = ({ task }: TaskFormProp) => {
     }
   };
 
+  const onSubmitUpdate = async (data: CreateTaskProp) => {
+    if (!task) {
+      enqueueSnackbar("Что-то пошло не так", {
+        style: messageVariants.error,
+      });
+      return;
+    }
+    try {
+      await dispatch(updateTask({ task: data, id: task.id }));
+      await refetch();
+      enqueueSnackbar("Задача успешно обновлена", {
+        style: messageVariants.success,
+      });
+    } catch (error) {
+      enqueueSnackbar("Не удалось обновить задачу", {
+        style: messageVariants.error,
+      });
+      console.log(error);
+    }
+  };
+
+  const onSubmit = task ? onSubmitUpdate : onSubmitCreate;
+
   return (
-    <StyledForm onSubmit={handleSubmit(onSubmitCreate)}>
-      <h2>Создание задачи</h2>
+    <StyledForm onSubmit={handleSubmit(onSubmit)}>
+      <h2>{task ? "Редактирование задачи" : "Создание задачи"}</h2>
+      <CancelButton
+        type="button"
+        onClick={() => dispatch(appSliceActions.closeModal())}
+      >
+        ❌
+      </CancelButton>
       <FormInput
         register={register("title", {
           required: "Обязательно для заполнения",
@@ -139,6 +185,7 @@ export const TaskForm = ({ task }: TaskFormProp) => {
         options={boardOptions}
         control={control}
         name={"boardId"}
+        isDisabled={task ? true : false}
       />
       <FormSelect
         title="Приоритет"
@@ -164,14 +211,13 @@ export const TaskForm = ({ task }: TaskFormProp) => {
         name={"assigneeId"}
       />
       <ButtonWrapper>
-        <CancelButton
-          type="button"
-          onClick={() => dispatch(appSliceActions.closeModal())}
-        >
-          Отмена
-        </CancelButton>
         {task ? (
-          <SubmitButton>Сохранить изменения</SubmitButton>
+          <>
+            <button type="button" onClick={onClickGoToBoard}>
+              Перейти к доске
+            </button>
+            <SubmitButton>Сохранить изменения</SubmitButton>
+          </>
         ) : (
           <SubmitButton>Создать</SubmitButton>
         )}
@@ -202,7 +248,18 @@ const ButtonWrapper = styled.div`
 `;
 
 const CancelButton = styled.button`
-  background-color: var(--color-red);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  width: 0;
+  padding: 0 30px;
+
+  background-color: transparent;
 `;
 const SubmitButton = styled.button`
   background-color: var(--color-blue);
