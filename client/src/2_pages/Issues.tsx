@@ -30,6 +30,11 @@ export const Issues = () => {
     dispatch(appSliceActions.openModal());
   };
 
+  const onCloseForm = () => {
+    setSelectedTask(null);
+    dispatch(appSliceActions.closeModal())
+  }
+
   return (
     <PageContentContainer>
       <h1 className="visually-hidden"> Список всех задач</h1>
@@ -46,7 +51,7 @@ export const Issues = () => {
       </TaskList>
       {isModalOpen && selectedTask && (
         <Modal>
-          <TaskForm task={selectedTask} />
+          <TaskForm task={selectedTask} onClose={onCloseForm}/>
         </Modal>
       )}
     </PageContentContainer>

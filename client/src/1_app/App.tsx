@@ -8,11 +8,13 @@ import { SnackbarProvider } from "notistack";
 import { useAppDispatch } from "../6_shared/hooks/useAppDispatch";
 import { useEffect } from "react";
 import { getBoards } from "../5_entities/boards/api/getBoards";
+import { getTasks } from "../5_entities/tasks/api/getTasks";
 
 function App() {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(getBoards());
+    dispatch(getTasks());
   }, []);
 
   return (
@@ -22,8 +24,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to={ROUTES.BOARDS} />} />
         <Route path={ROUTES.BOARDS} element={<Boards />} />
-        <Route path={ROUTES.BOARD.PATH} element={<Board />} />
         <Route path={ROUTES.ISSUES} element={<Issues />} />
+        <Route path={ROUTES.BOARD.PATH} element={<Board />} />
         <Route path="*" element={<Navigate to="/boards" />} />
       </Routes>
     </>

@@ -1,39 +1,118 @@
 import styled from "styled-components";
 import { PageContentContainer } from "../6_shared/ui/PageContentContainer";
 import { TaskCard } from "../5_entities/tasks/ui/TaskCard";
-import { ITask } from "../5_entities/tasks/model/ITask";
+import { ITask, TaskStatusEnum } from "../5_entities/tasks/model/ITask";
+import { useSelector } from "react-redux";
+import { RootState } from "../5_entities/store";
+import { useEffect, useState } from "react";
+import { useAppDispatch } from "../6_shared/hooks/useAppDispatch";
+import { appSliceActions } from "../1_app/appSlice";
+import { Modal } from "../3_widgets/modals/Modal";
+import { TaskForm } from "../4_features/forms/TaskForm";
+import { useNavigate, useParams } from "react-router";
+import { IBoard } from "../5_entities/boards/model/IBoard";
+import { BoardId } from "../5_entities/tasks/hooks/useTasks";
+import { enqueueSnackbar } from "notistack";
+import { messageVariants } from "../6_shared/config/notificationStyles";
+
+interface BoardTaskList {
+  backlog: ITask[];
+  inProgress: ITask[];
+  done: ITask[];
+}
 
 export const Board = () => {
-  const project = {
-    id: 1,
-    name: "Редизайн карточки товара",
-    description: "Обновление UI/UX основных страниц",
-    taskCount: 10,
+  const boardId = Number(useParams().id) as BoardId;
+
+  const board = useSelector((state: RootState) =>
+    state.boards.list.find((item: IBoard) => item.id === boardId)
+  );
+
+  const tasks = useSelector((state: RootState) => state.tasks.list);
+
+  const [taskList, setTaskList] = useState<BoardTaskList>({
+    backlog: [],
+    inProgress: [],
+    done: [],
+  });
+
+  const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
+  const isModalOpen = useSelector((state: RootState) => state.app.isModalOpen);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (boardId === null) {
+      navigate("/boards");
+      enqueueSnackbar("Что-то пошло не так", {
+        style: messageVariants.error,
+      });
+      return;
+    }
+
+    const backlog: ITask[] = [];
+    const inProgress: ITask[] = [];
+    const done: ITask[] = [];
+    const invalid: ITask[] = [];
+
+    tasks
+      .filter((item: ITask) => item.boardId === boardId)
+      .forEach((task) => {
+        if (task.status === TaskStatusEnum.Backlog) {
+          backlog.push(task);
+        } else if (task.status === TaskStatusEnum.InProgress) {
+          inProgress.push(task);
+        } else if (task.status === TaskStatusEnum.Done) {
+          done.push(task);
+        } else {
+          invalid.push(task);
+        }
+      });
+
+    setTaskList({ backlog, inProgress, done });
+    invalid.forEach((task) => {
+      console.log(`Неверный статус у задачи ${task.id}`);
+    });
+  }, [tasks, boardId]);
+
+  const onClickTask = (task: ITask) => {
+    setSelectedTask(task);
+    dispatch(appSliceActions.openModal());
   };
-  
+
+  const onCloseForm = () => {
+    setSelectedTask(null);
+    dispatch(appSliceActions.closeModal());
+  };
+
   return (
     <PageContentContainer>
-        <h1>{project.name}</h1>
-        <BoardContainer>
-          <Column>
-            <h2>Backlog</h2>
-            {tasksArray.map((item: ITask) => (
-              <TaskCard task={item} />
-            ))}
-          </Column>
-          <Column>
-            <h2>In progress</h2>
-            {tasksArray.map((item: ITask) => (
-              <TaskCard task={item} />
-            ))}
-          </Column>
-          <Column>
-            <h2>Done</h2>
-            {tasksArray.map((item: ITask) => (
-              <TaskCard task={item} />
-            ))}
-          </Column>
-        </BoardContainer>
+      <h1>{board?.name}</h1>
+      <BoardContainer>
+        <Column>
+          <h2>Backlog</h2>
+          {taskList.backlog.map((item: ITask) => (
+            <TaskCard task={item} onClick={onClickTask} />
+          ))}
+        </Column>
+        <Column>
+          <h2>In progress</h2>
+          {taskList.inProgress.map((item: ITask) => (
+            <TaskCard task={item} onClick={onClickTask} />
+          ))}
+        </Column>
+        <Column>
+          <h2>Done</h2>
+          {taskList.done.map((item: ITask) => (
+            <TaskCard task={item} onClick={onClickTask} />
+          ))}
+        </Column>
+      </BoardContainer>
+      {isModalOpen && selectedTask && (
+        <Modal>
+          <TaskForm task={selectedTask} onClose={() => onCloseForm()} />
+        </Modal>
+      )}
     </PageContentContainer>
   );
 };
@@ -63,146 +142,3 @@ const Column = styled.section`
   background-color: var(--color-gray-light);
   border-radius: var(--border-radius);
 `;
-
-const tasksArray: ITask[] = [
-  {
-    id: 1,
-    title: "Реализация новой галереи изображений",
-    description:
-      "Реализация нового UI компонента с учетом гайдлайнов дизайн-системы. Детали будут уточнены в процессе разработки.",
-    priority: "High",
-    status: "Done",
-    assignee: {
-      id: 1,
-      fullName: "Александра Ветрова",
-      email: "al.vetrova@avito.ru",
-      avatarUrl: "https://randomuser.me/api/portraits/women/1.jpg",
-    },
-  },
-  {
-    id: 2,
-    title: "Адаптация карточки для мобильных устройств",
-    description:
-      "Адаптация интерфейса для различных разрешений экрана. Детали будут уточнены в процессе разработки.",
-    priority: "Medium",
-    status: "Done",
-    assignee: {
-      id: 2,
-      fullName: "Илья Романов",
-      email: "il.romanov@avito.ru",
-      avatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-  },
-  {
-    id: 3,
-    title: "Оптимизация загрузки медиа-контента",
-    description:
-      "Оптимизация загрузки и отображения медиа-контента. Детали будут уточнены в процессе разработки.",
-    priority: "Medium",
-    status: "Backlog",
-    assignee: {
-      id: 2,
-      fullName: "Илья Романов",
-      email: "il.romanov@avito.ru",
-      avatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-  },
-  {
-    id: 4,
-    title: "Добавление микроанимаций интерфейса",
-    description:
-      "Реализация нового UI компонента с учетом гайдлайнов дизайн-системы. Детали будут уточнены в процессе разработки.",
-    priority: "Low",
-    status: "Done",
-    assignee: {
-      id: 1,
-      fullName: "Александра Ветрова",
-      email: "al.vetrova@avito.ru",
-      avatarUrl: "https://randomuser.me/api/portraits/women/1.jpg",
-    },
-  },
-  {
-    id: 5,
-    title: "Интеграция с системой рекомендаций",
-    description:
-      "Адаптация интерфейса для различных разрешений экрана. Детали будут уточнены в процессе разработки.",
-    priority: "Low",
-    status: "Done",
-    assignee: {
-      id: 1,
-      fullName: "Александра Ветрова",
-      email: "al.vetrova@avito.ru",
-      avatarUrl: "https://randomuser.me/api/portraits/women/1.jpg",
-    },
-  },
-  {
-    id: 6,
-    title: "Реализация темной темы",
-    description:
-      "Оптимизация загрузки и отображения медиа-контента. Детали будут уточнены в процессе разработки.",
-    priority: "High",
-    status: "Backlog",
-    assignee: {
-      id: 2,
-      fullName: "Илья Романов",
-      email: "il.romanov@avito.ru",
-      avatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-  },
-  {
-    id: 7,
-    title: "Оптимизация CLS (Cumulative Layout Shift)",
-    description:
-      "Реализация нового UI компонента с учетом гайдлайнов дизайн-системы. Детали будут уточнены в процессе разработки.",
-    priority: "Low",
-    status: "Backlog",
-    assignee: {
-      id: 2,
-      fullName: "Илья Романов",
-      email: "il.romanov@avito.ru",
-      avatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-  },
-  {
-    id: 8,
-    title: "Добавление быстрого просмотра товара",
-    description:
-      "Адаптация интерфейса для различных разрешений экрана. Детали будут уточнены в процессе разработки.",
-    priority: "Medium",
-    status: "Backlog",
-    assignee: {
-      id: 2,
-      fullName: "Илья Романов",
-      email: "il.romanov@avito.ru",
-      avatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-  },
-  {
-    id: 9,
-    title: "Интеграция системы рейтингов",
-    description:
-      "Оптимизация загрузки и отображения медиа-контента. Детали будут уточнены в процессе разработки.",
-    priority: "High",
-    status: "Done",
-    assignee: {
-      id: 2,
-      fullName: "Илья Романов",
-      email: "il.romanov@avito.ru",
-      avatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-  },
-  {
-    id: 10,
-    title: "Реализация sticky-панели действий",
-    description:
-      "Реализация нового UI компонента с учетом гайдлайнов дизайн-системы. Детали будут уточнены в процессе разработки.",
-    priority: "Medium",
-    status: "InProgress",
-    assignee: {
-      id: 2,
-      fullName: "Илья Романов",
-      email: "il.romanov@avito.ru",
-      avatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-  },
-];

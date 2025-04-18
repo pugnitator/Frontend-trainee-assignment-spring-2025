@@ -4,12 +4,18 @@ import { IBoard } from "../5_entities/boards/model/IBoard";
 import { useSelector } from "react-redux";
 import { RootState } from "../5_entities/store";
 import Loader from "../6_shared/ui/Loader";
+import { BoardId } from "../5_entities/tasks/hooks/useTasks";
+import { useNavigate } from "react-router";
+import { ROUTES } from "../1_app/routes";
 
 export const Boards = () => {
   const boards = useSelector((state: RootState) => state.boards.list);
   const isBoardsLoad = useSelector((state: RootState) => state.boards.isLoad);
+  const navigate = useNavigate()
 
-  console.log(boards);
+  const onClickBoard = (id: BoardId) => {
+    navigate(ROUTES.BOARD.link(id));
+  }
 
   return (
     <PageContentContainer>
@@ -18,7 +24,7 @@ export const Boards = () => {
         {isBoardsLoad ? (
           <BoardsList>
             {boards.map((item: IBoard) => (
-              <BoardsListItem>{item.name}</BoardsListItem>
+              <Board onClick={() => onClickBoard(item.id)}>{item.name}</Board>
             ))}
           </BoardsList>
         ) : (
@@ -48,7 +54,7 @@ const BoardsList = styled.ul`
   width: 100%;
 `;
 
-const BoardsListItem = styled.li`
+const Board = styled.li`
   display: flex;
   align-items: center;
 

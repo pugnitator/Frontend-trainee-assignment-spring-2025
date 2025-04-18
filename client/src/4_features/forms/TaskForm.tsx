@@ -5,7 +5,7 @@ import {
   TaskStatusEnum,
 } from "../../5_entities/tasks/model/ITask";
 import styled from "styled-components";
-import { useTasks } from "../../5_entities/tasks/hooks/useTasks";
+import { BoardId, useTasks } from "../../5_entities/tasks/hooks/useTasks";
 import { enqueueSnackbar } from "notistack";
 import { useAppDispatch } from "../../6_shared/hooks/useAppDispatch";
 import {
@@ -31,13 +31,25 @@ import { ROUTES } from "../../1_app/routes";
 
 interface TaskFormProp {
   task?: ITask;
+  boardId?: BoardId;
+  onClose: () => void;
 }
 
-export const TaskForm = ({ task }: TaskFormProp) => {
+export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const dispatch = useAppDispatch();
   const { refetch } = useTasks();
   const navigate = useNavigate();
+  const form = useForm<CreateTaskProp>({
+    defaultValues: {
+      title: task?.title || "",
+      description: task?.description || "",
+      boardId: task?.boardId || 0,
+      priority: task?.priority || TaskPriorityEnum.Medium,
+      assigneeId: task?.assignee.id || 0,
+      status: task?.status || TaskStatusEnum.Backlog,
+    },
+  });
 
   useEffect(() => {
     getUsers().then((users) => {
@@ -50,18 +62,11 @@ export const TaskForm = ({ task }: TaskFormProp) => {
         );
       }
     });
-  }, []);
 
-  const form = useForm<CreateTaskProp>({
-    defaultValues: {
-      title: task?.title || "",
-      description: task?.description || "",
-      boardId: task?.boardId || 0,
-      priority: task?.priority || TaskPriorityEnum.Medium,
-      assigneeId: task?.assignee.id || 0,
-      status: task?.status || TaskStatusEnum.Backlog,
-    },
-  });
+    if (boardId && !task) {
+      form.setValue("boardId", boardId);
+    }
+  }, [boardId]);
 
   const {
     register,
@@ -76,7 +81,6 @@ export const TaskForm = ({ task }: TaskFormProp) => {
       label: item.name,
     }))
   );
-  console.log("boardOptions in form", boardOptions);
 
   const statusOptions = Object.values(TaskStatusEnum).map((status) => ({
     value: status,
@@ -128,6 +132,7 @@ export const TaskForm = ({ task }: TaskFormProp) => {
       enqueueSnackbar("Задача успешно обновлена", {
         style: messageVariants.success,
       });
+      dispatch(appSliceActions.closeModal());
     } catch (error) {
       enqueueSnackbar("Не удалось обновить задачу", {
         style: messageVariants.error,
@@ -143,7 +148,7 @@ export const TaskForm = ({ task }: TaskFormProp) => {
       <h2>{task ? "Редактирование задачи" : "Создание задачи"}</h2>
       <CancelButton
         type="button"
-        onClick={() => dispatch(appSliceActions.closeModal())}
+        onClick={() => onClose()}
       >
         ❌
       </CancelButton>
@@ -185,7 +190,7 @@ export const TaskForm = ({ task }: TaskFormProp) => {
         options={boardOptions}
         control={control}
         name={"boardId"}
-        isDisabled={task ? true : false}
+        isDisabled={Boolean(boardId || task)}
       />
       <FormSelect
         title="Приоритет"

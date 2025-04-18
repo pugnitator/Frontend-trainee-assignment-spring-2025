@@ -7,10 +7,16 @@ import { RootState } from "../../5_entities/store";
 import { useAppDispatch } from "../../6_shared/hooks/useAppDispatch";
 import { appSliceActions } from "../../1_app/appSlice";
 import { TaskForm } from "../../4_features/forms/TaskForm";
+import { useLocation } from "react-router";
 
 export const Header = () => {
   const isModalOpen = useSelector((state: RootState) => state.app.isModalOpen);
   const dispatch = useAppDispatch();
+  const location = useLocation();
+
+  const boardIdStr = location.pathname.split("/").filter((item) => item !== "")?.[1];
+  const boardId = boardIdStr ? Number(boardIdStr) : undefined;
+
   const onClickCreateTask = () => {
     dispatch(appSliceActions.openModal());
   };
@@ -28,7 +34,10 @@ export const Header = () => {
       </ContentWrapper>
       {isModalOpen && (
         <Modal>
-          <TaskForm />
+          <TaskForm
+            onClose={() => dispatch(appSliceActions.closeModal())}
+            {...(boardId ? { boardId } : {})}
+          />
         </Modal>
       )}
     </StyledHeader>

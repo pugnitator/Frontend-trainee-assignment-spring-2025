@@ -22,7 +22,7 @@ export const FormSelect = ({
   rules,
   isDisabled
 }: FormSelectProp) => {
-  console.log("selectData", options);
+  // console.log("selectData", options);
   return (
     <Container>
       <label>{title}</label>
