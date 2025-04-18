@@ -1,10 +1,17 @@
 import { useForm } from "react-hook-form";
-import { ITask, TaskPriorityEnum, TaskStatusEnum } from "../../5_entities/tasks/model/ITask";
+import {
+  ITask,
+  TaskPriorityEnum,
+  TaskStatusEnum,
+} from "../../5_entities/tasks/model/ITask";
 import styled from "styled-components";
 import { useTasks } from "../../5_entities/tasks/hooks/useTasks";
 import { enqueueSnackbar } from "notistack";
 import { useAppDispatch } from "../../6_shared/hooks/useAppDispatch";
-import { createTask, CreateTaskProp } from "../../5_entities/tasks/api/createTask";
+import {
+  createTask,
+  CreateTaskProp,
+} from "../../5_entities/tasks/api/createTask";
 import { messageVariants } from "../../6_shared/config/notificationStyles";
 import { FormInput } from "../../6_shared/ui/FormInput";
 import { FormTextarea } from "../../6_shared/ui/FormTextArea";
@@ -12,14 +19,32 @@ import { FormSelect } from "../../6_shared/ui/FormSelect";
 import { useSelector } from "react-redux";
 import { RootState } from "../../5_entities/store";
 import { IBoard } from "../../5_entities/boards/model/IBoard";
+import { appSliceActions } from "../../1_app/appSlice";
+import { getUsers } from "../../5_entities/users/api/getUsers";
+import { IUser } from "../../5_entities/users/model/IUser";
+import { useEffect, useState } from "react";
 
 interface TaskFormProp {
   task?: ITask;
 }
 
 export const TaskForm = ({ task }: TaskFormProp) => {
+  const [assigneeOptions, setAssigneeOptions] = useState([]);
   const dispatch = useAppDispatch();
   const { refetch } = useTasks();
+
+  useEffect(() => {
+    getUsers().then((users) => {
+      if (users) {
+        setAssigneeOptions(
+          users.map((user: IUser) => ({
+            value: user.id,
+            label: user.fullName,
+          }))
+        );
+      }
+    });
+  }, []);
 
   const form = useForm<CreateTaskProp>({
     defaultValues: {
@@ -51,15 +76,11 @@ export const TaskForm = ({ task }: TaskFormProp) => {
     value: status,
     label: status,
   }));
-  
+
   const priorityOptions = Object.values(TaskPriorityEnum).map((priority) => ({
     value: priority,
     label: priority,
   }));
-
-  const assigneeOptions = 0; //TODO: запрос всех юзеров сделать
-
-
 
   const onSubmitCreate = async (data: CreateTaskProp) => {
     try {
@@ -68,6 +89,7 @@ export const TaskForm = ({ task }: TaskFormProp) => {
       enqueueSnackbar("Задача успешно создана", {
         style: messageVariants.success,
       });
+      dispatch(appSliceActions.closeModal())
     } catch (error) {
       enqueueSnackbar("Не удалось создать задачу", {
         style: messageVariants.error,
@@ -125,22 +147,29 @@ export const TaskForm = ({ task }: TaskFormProp) => {
         control={control}
         name={"priority"}
       />
-      {task && <FormSelect
-        title="Статус"
-        errorMessage={errors.description?.message}
-        options={statusOptions}
-        control={control}
-        name={"status"}
-      />}
+      {task && (
+        <FormSelect
+          title="Статус"
+          errorMessage={errors.description?.message}
+          options={statusOptions}
+          control={control}
+          name={"status"}
+        />
+      )}
       <FormSelect
         title="Ответственный"
         errorMessage={errors.description?.message}
-        options={boardOptions}
+        options={assigneeOptions}
         control={control}
         name={"assigneeId"}
       />
       <ButtonWrapper>
-        <CancelButton>Отмена</CancelButton>
+        <CancelButton
+          type="button"
+          onClick={() => dispatch(appSliceActions.closeModal())}
+        >
+          Отмена
+        </CancelButton>
         {task ? (
           <SubmitButton>Сохранить изменения</SubmitButton>
         ) : (

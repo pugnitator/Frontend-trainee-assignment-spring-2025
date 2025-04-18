@@ -1,20 +1,13 @@
 import styled from "styled-components";
 import { PageContentContainer } from "../6_shared/ui/PageContentContainer";
 import { IBoard } from "../5_entities/boards/model/IBoard";
-import { useEffect } from "react";
-import { useAppDispatch } from "../6_shared/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 import { RootState } from "../5_entities/store";
-import { getBoards } from "../5_entities/boards/api/getBoards";
 import Loader from "../6_shared/ui/Loader";
 
 export const Boards = () => {
   const boards = useSelector((state: RootState) => state.boards.list);
   const isBoardsLoad = useSelector((state: RootState) => state.boards.isLoad);
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(getBoards());
-  }, []);
 
   console.log(boards);
 
