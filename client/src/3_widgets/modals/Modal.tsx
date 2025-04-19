@@ -23,6 +23,7 @@ const ModalConteiner = styled.div`
   top: 0;
   left: 0;
   transition: 0.5;
+  z-index: 9999;
 
   display: flex;
   justify-content: center;

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { boardsInitialState } from "./model/boardsInitialState";
 import { IBoard } from "./model/IBoard";
 import { getBoards } from "./api/getBoards";
+import { getBoardTasks } from "./api/getBoardTasks";
 
 const boardsSlice = createSlice({
   name: "boards",
@@ -11,6 +12,9 @@ const boardsSlice = createSlice({
       state.list = action.payload;
       state.isLoad = true;
     },
+    setCurrentBoardList(state, action) {
+      state.currentBoardTaskList = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -23,6 +27,12 @@ const boardsSlice = createSlice({
       })
       .addCase(getBoards.rejected, (state) => {
         state.isLoad = false;
+      })
+      .addCase(getBoardTasks.fulfilled, (state, action) => {
+        state.currentBoardTaskList = action.payload;
+      })
+      .addCase(getBoardTasks.rejected, (state, action) => {
+        console.error(action.payload); 
       });
   },
 });

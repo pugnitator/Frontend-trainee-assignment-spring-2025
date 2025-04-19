@@ -4,7 +4,7 @@ import { TaskCard } from "../5_entities/tasks/ui/TaskCard";
 import { ITask, TaskStatusEnum } from "../5_entities/tasks/model/ITask";
 import { useSelector } from "react-redux";
 import { RootState } from "../5_entities/store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "../6_shared/hooks/useAppDispatch";
 import { appSliceActions } from "../1_app/appSlice";
 import { Modal } from "../3_widgets/modals/Modal";
@@ -14,6 +14,8 @@ import { IBoard } from "../5_entities/boards/model/IBoard";
 import { BoardId } from "../5_entities/tasks/hooks/useTasks";
 import { enqueueSnackbar } from "notistack";
 import { messageVariants } from "../6_shared/config/notificationStyles";
+import { useBoardTasks } from "../5_entities/tasks/hooks/useBoardTasks";
+import Loader from "../6_shared/ui/Loader";
 
 interface BoardTaskList {
   backlog: ITask[];
@@ -23,12 +25,11 @@ interface BoardTaskList {
 
 export const Board = () => {
   const boardId = Number(useParams().id) as BoardId;
-
   const board = useSelector((state: RootState) =>
     state.boards.list.find((item: IBoard) => item.id === boardId)
   );
 
-  const tasks = useSelector((state: RootState) => state.tasks.list);
+  const { tasks, isLoad, hasError, refetch } = useBoardTasks({ boardId });
 
   const [taskList, setTaskList] = useState<BoardTaskList>({
     backlog: [],
@@ -40,8 +41,16 @@ export const Board = () => {
   const isModalOpen = useSelector((state: RootState) => state.app.isModalOpen);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const hasNotifiedRef = useRef(false);
 
   useEffect(() => {
+    if (hasError && !hasNotifiedRef.current) {
+      enqueueSnackbar("Не удалось получить список задач", {
+        style: messageVariants.error,
+      });
+      hasNotifiedRef.current = true;
+    }
+
     if (boardId === null) {
       navigate("/boards");
       enqueueSnackbar("Что-то пошло не так", {
@@ -50,30 +59,32 @@ export const Board = () => {
       return;
     }
 
+    console.log("boardTasks2", tasks);
+
     const backlog: ITask[] = [];
     const inProgress: ITask[] = [];
     const done: ITask[] = [];
     const invalid: ITask[] = [];
 
-    tasks
-      .filter((item: ITask) => item.boardId === boardId)
-      .forEach((task) => {
-        if (task.status === TaskStatusEnum.Backlog) {
-          backlog.push(task);
-        } else if (task.status === TaskStatusEnum.InProgress) {
-          inProgress.push(task);
-        } else if (task.status === TaskStatusEnum.Done) {
-          done.push(task);
-        } else {
-          invalid.push(task);
-        }
-      });
+    tasks.forEach((task) => {
+      if (task.status === TaskStatusEnum.Backlog) {
+        backlog.push(task);
+      } else if (task.status === TaskStatusEnum.InProgress) {
+        inProgress.push(task);
+      } else if (task.status === TaskStatusEnum.Done) {
+        done.push(task);
+      } else {
+        invalid.push(task);
+      }
+    });
+
+    console.log("boardTasks3", { backlog, inProgress, done });
 
     setTaskList({ backlog, inProgress, done });
     invalid.forEach((task) => {
       console.log(`Неверный статус у задачи ${task.id}`);
     });
-  }, [tasks, boardId]);
+  }, [tasks, isLoad, hasError]);
 
   const onClickTask = (task: ITask) => {
     setSelectedTask(task);
@@ -89,28 +100,34 @@ export const Board = () => {
     <PageContentContainer>
       <h1>{board?.name}</h1>
       <BoardContainer>
-        <Column>
-          <h2>Backlog</h2>
-          {taskList.backlog.map((item: ITask) => (
-            <TaskCard task={item} onClick={onClickTask} />
-          ))}
-        </Column>
-        <Column>
-          <h2>In progress</h2>
-          {taskList.inProgress.map((item: ITask) => (
-            <TaskCard task={item} onClick={onClickTask} />
-          ))}
-        </Column>
-        <Column>
-          <h2>Done</h2>
-          {taskList.done.map((item: ITask) => (
-            <TaskCard task={item} onClick={onClickTask} />
-          ))}
-        </Column>
+        {isLoad ? (
+          <>
+            <Column>
+              <h2>Backlog</h2>
+              {taskList.backlog.map((item: ITask) => (
+                <TaskCard task={item} onClick={onClickTask} />
+              ))}
+            </Column>
+            <Column>
+              <h2>In progress</h2>
+              {taskList.inProgress.map((item: ITask) => (
+                <TaskCard task={item} onClick={onClickTask} />
+              ))}
+            </Column>
+            <Column>
+              <h2>Done</h2>
+              {taskList.done.map((item: ITask) => (
+                <TaskCard task={item} onClick={onClickTask} />
+              ))}
+            </Column>
+          </>
+        ) : (
+          <Loader />
+        )}
       </BoardContainer>
       {isModalOpen && selectedTask && (
         <Modal>
-          <TaskForm task={selectedTask} onClose={() => onCloseForm()} />
+          <TaskForm task={selectedTask} onClose={() => onCloseForm()} refetchList={refetch} />
         </Modal>
       )}
     </PageContentContainer>

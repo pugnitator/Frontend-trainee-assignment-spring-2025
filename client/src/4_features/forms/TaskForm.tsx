@@ -27,14 +27,16 @@ import { updateTask } from "../../5_entities/tasks/api/updateTask";
 import { useNavigate } from "react-router";
 import { ROUTES } from "../../1_app/routes";
 import closeIcon from "../../assets/icons/closeIcon.svg";
+import { getBoardTasks } from "../../5_entities/boards/api/getBoardTasks";
 
 interface TaskFormProp {
   task?: ITask;
   boardId?: BoardId;
   onClose: () => void;
+  refetchList?: () => void;
 }
 
-export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
+export const TaskForm = ({ task, boardId, onClose, refetchList}: TaskFormProp) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const dispatch = useAppDispatch();
   const { refetch } = useTasks();
@@ -105,7 +107,8 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
   const onSubmitCreate = async (data: CreateTaskProp) => {
     try {
       await dispatch(createTask(data));
-      await refetch();
+      if(boardId) dispatch(getBoardTasks(boardId));
+      refetch();
       enqueueSnackbar("Задача успешно создана", {
         style: messageVariants.success,
       });
@@ -127,7 +130,8 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
     }
     try {
       await dispatch(updateTask({ task: data, id: task.id }));
-      await refetch();
+      if(boardId) dispatch(getBoardTasks(boardId));
+      refetch();
       enqueueSnackbar("Задача успешно обновлена", {
         style: messageVariants.success,
       });
