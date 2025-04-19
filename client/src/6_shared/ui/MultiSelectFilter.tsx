@@ -6,13 +6,14 @@ export interface MultiSelectFilterProp {
   name: string;
   placeHolder: string;
   onChange: (values: (string | number)[]) => void;
+  clearFilter: () => void;
 }
 
 export const MultiSelectFilter = ({
   options,
-  name,
   placeHolder,
   onChange,
+  clearFilter,
 }: MultiSelectFilterProp) => {
   return (
     <Container>
@@ -26,8 +27,12 @@ export const MultiSelectFilter = ({
           closeMenuOnSelect={false}
           hideSelectedOptions={false}
           onChange={(selectedOptions) => {
-            const values = selectedOptions?.map((opt) => opt.value) ?? [];
-            onChange(values);
+            if (!selectedOptions || selectedOptions.length === 0) {
+              clearFilter();
+            } else {
+              const values = selectedOptions.map((opt) => opt.value);
+              onChange(values);
+            }
           }}
           styles={{
             control: (base, state) => ({

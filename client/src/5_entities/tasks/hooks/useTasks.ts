@@ -15,18 +15,28 @@ export type BoardId = number;
 
 export const useTasks = () => {
   const taskList = useSelector((state: RootState) => state.tasks.list);
+  const [isLoad, setIsLoad] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [search, setSearch] = useState<string | null>(null);
   const [filter, setFilter] = useState<TaskFilters>({});
   const dispatch = useAppDispatch();
-  const refetch = () => dispatch(getTasks());
+
+  const refetch = () => {
+    setIsLoad(false);
+    dispatch(getTasks()).then((request) => {
+      if (request.meta.requestStatus !== "rejected") {
+        setIsLoad(true);
+      } else {
+        setHasError(true);
+      }
+    });
+  };
 
   useEffect(() => {
     refetch();
   }, []);
 
-
   const searchTask = (text: string | undefined) => {
-    console.log('searchText', text);
     if (!text) return;
     setSearch(text.toLowerCase());
   };
@@ -47,7 +57,7 @@ export const useTasks = () => {
       boardId: undefined,
     }));
   };
-  
+
   const addStatusFilter = (values: TaskStatusEnum[]) => {
     setFilter((prev) => ({
       ...prev,
@@ -62,13 +72,7 @@ export const useTasks = () => {
     }));
   };
 
-  const clearFilters = () => {
-    setFilter({});
-  };
-
-  const applyFilters = 
-    () => {
-    console.log('apply')
+  const applyFilters = () => {
     const searchedList = search
       ? taskList.filter(
           (item: ITask) =>
@@ -77,15 +81,14 @@ export const useTasks = () => {
         )
       : taskList;
 
-      console.log('searchedList', searchedList)
-
     const filteredList = filter
       ? searchedList.filter((item: ITask) => {
           if (filter.status?.length && !filter.status.includes(item.status)) {
             return false;
           }
           if (
-            filter.boardId?.length && !filter.boardId.includes(item.boardId)
+            filter.boardId?.length &&
+            !filter.boardId.includes(item.boardId)
           ) {
             return false;
           }
@@ -93,22 +96,21 @@ export const useTasks = () => {
         })
       : searchedList;
 
-    console.log('filteredList', filteredList)
-
     return filteredList;
-  }
+  };
+
   const tasks = applyFilters();
-  // console.log('tasks', tasks)
 
   return {
     tasks,
+    isLoad,
+    hasError,
     searchTask,
     cancelSearchTask,
     addBoardIdFilter,
     addStatusFilter,
     clearBoardIdFilter,
     clearStatusFilter,
-    clearFilters,
-    refetch
+    refetch,
   };
 };

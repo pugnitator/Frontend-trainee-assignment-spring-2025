@@ -16,7 +16,6 @@ interface SearchTaskBarProp {
   addStatusFilter: (value: TaskStatusEnum[]) => void;
   clearBoardIdFilter: () => void;
   clearStatusFilter: () => void;
-  clearFilters: () => void;
 }
 
 export const SearchTaskBar = ({
@@ -26,7 +25,6 @@ export const SearchTaskBar = ({
   addStatusFilter,
   clearBoardIdFilter,
   clearStatusFilter,
-  clearFilters,
 }: SearchTaskBarProp) => {
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -54,13 +52,11 @@ export const SearchTaskBar = ({
   };
 
   const handleBoardChange = (values: (string | number)[]) => {
-    console.log('handleBoardChange вызыван')
     const boardIds = values as BoardId[];
     addBoardIdFilter(boardIds);
   };
 
   const handleStatusChange = (values: (string | number)[]) => {
-    console.log('handleStatusChange вызыван')
     const statuses = values as TaskStatusEnum[];
     addStatusFilter(statuses);
   };
@@ -71,12 +67,14 @@ export const SearchTaskBar = ({
         <MultiSelectFilter
           options={boardOptions}
           onChange={handleBoardChange}
+          clearFilter={clearBoardIdFilter}
           name={"boardId"}
           placeHolder="Проект"
         />
         <MultiSelectFilter
           options={statusOptions}
           onChange={handleStatusChange}
+          clearFilter={clearStatusFilter}
           name={"status"}
           placeHolder="Статус"
         />

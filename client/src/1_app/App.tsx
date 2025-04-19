@@ -8,13 +8,14 @@ import { SnackbarProvider } from "notistack";
 import { useAppDispatch } from "../6_shared/hooks/useAppDispatch";
 import { useEffect } from "react";
 import { getBoards } from "../5_entities/boards/api/getBoards";
-import { getTasks } from "../5_entities/tasks/api/getTasks";
+import { useTasks } from "../5_entities/tasks/hooks/useTasks";
 
 function App() {
   const dispatch = useAppDispatch();
+  const {tasks} = useTasks();
+  
   useEffect(() => {
     dispatch(getBoards());
-    dispatch(getTasks());
   }, []);
 
   return (

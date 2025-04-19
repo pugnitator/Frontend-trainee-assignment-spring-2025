@@ -22,7 +22,6 @@ export const FormSelect = ({
   rules,
   isDisabled
 }: FormSelectProp) => {
-  // console.log("selectData", options);
   return (
     <Container>
       {title ?? <label>{title}</label>}
