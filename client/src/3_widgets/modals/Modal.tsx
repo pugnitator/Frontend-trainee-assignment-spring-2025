@@ -38,8 +38,7 @@ const ModalContent = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 30px;
-  width: clamp(300px, 41vw, 600px);
-  border-radius: var(--border-radius);
-  background-color: var(--color-light);
+  width: fit-content;
+  /* border-radius: var(--border-radius);
+  background-color: var(--color-light); */
 `;

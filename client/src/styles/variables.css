@@ -7,9 +7,16 @@
   --color-red: #ff6163;
   --color-green: #43a047;
 
-  --content-container-padding-x: 30px;
+  --font-size: 16px;
+  --font-size-small: 14px;
+
+  --content-container-padding-x: clamp(10px, 3vw, 30px);
   --list-item-padding: 5px 10px;
   --border-radius: 10px;
   --border-radius-small: 5px;
   --header-height: 80px;
+
+  --small-desctop-breakpoint: 870px;
+  --tablet-breakpoint: 700px;
+  --mobile-breakpoint: 490px;
 }

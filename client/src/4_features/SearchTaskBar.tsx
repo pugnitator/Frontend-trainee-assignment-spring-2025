@@ -120,32 +120,51 @@ const Container = styled.div`
   justify-content: space-between;
 
   width: 100%;
-  height: 60px;
-
-  padding: 5px 30px;
+  min-height: 60px;
+  padding: 10px var(--content-container-padding-x);
 
   background-color: var(--color-gray-light);
   border-radius: var(--border-radius);
+
+  @media (max-width: 870px) {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
 `;
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 5px;
+  justify-content: start;
+  gap: 10px;
+
+  min-width: 300px;
+  height: 100%;
+  flex-shrink: 0;
+
+  @media (max-width: 870px) {
+    width: 100%;
+  }
 `;
 
 const InputWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 5px;
 
-  width: 300px;
+  width: calc(100% - 25px);
   background-color: var(--color-light);
   border-radius: var(--border-radius-small);
   border: 1px solid transparent;
   &:focus {
     border: 1px solid var(--color-blue);
+  }
+
+  @media (max-width: 870px) {
+    justify-content: start;
+    gap: 5px;
+    width: 100%;
   }
 `;
 
@@ -155,13 +174,12 @@ const ImageButton = styled.button`
   justify-content: center;
   min-width: 1px;
   min-height: 1px;
-  padding: 0 5px;
-
-  line-height: 0.5;
   background-color: transparent;
+  padding: 0;
 `;
 
 const SearchInput = styled.input`
+  width: calc(100% - 20px); // 20px - ширина кратинки крестика
   border: none;
   &:focus {
     border: none;

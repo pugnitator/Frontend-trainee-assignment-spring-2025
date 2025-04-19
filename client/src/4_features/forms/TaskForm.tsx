@@ -33,10 +33,9 @@ interface TaskFormProp {
   task?: ITask;
   boardId?: BoardId;
   onClose: () => void;
-  refetchList?: () => void;
 }
 
-export const TaskForm = ({ task, boardId, onClose, refetchList}: TaskFormProp) => {
+export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const dispatch = useAppDispatch();
   const { refetch } = useTasks();
@@ -243,10 +242,12 @@ const StyledForm = styled.form`
   justify-content: center;
   align-items: center;
   gap: 20px;
-  width: 100%;
-  max-width: 800px;
+  width: clamp(450px, 70vw, 600px);
+  min-width: 360px;
+  padding: var(--content-container-padding-x);
+  border-radius: var(--border-radius);
   color: var(--color-dark);
-  background-color: var(--color-light-alt);
+  background-color: var(--color-light);
 `;
 
 const ButtonWrapper = styled.div`

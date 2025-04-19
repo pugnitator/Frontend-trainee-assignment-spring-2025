@@ -77,17 +77,12 @@ export const MultiSelectFilter = ({
             }),
             input: (base) => ({
               ...base,
-              margin: "0", // Убирает лишние отступы для поля ввода
+              margin: "0",
               padding: "0",
-            }),
-            placeholder: (base) => ({
-              ...base,
-              color: "inherit", 
-              opacity: "0.5", 
             }),
             multiValue: (base) => ({
               ...base,
-              display: "none", 
+              display: "none",
             }),
             multiValueLabel: (base) => ({
               ...base,
@@ -104,19 +99,19 @@ export const MultiSelectFilter = ({
             }),
             menu: (base) => ({
               ...base,
-              maxHeight: "200px", 
-              backgroundColor: "var(--color-light)", 
-              borderRadius: "var(--border-radius-small)", 
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)", 
+              maxHeight: "200px",
+              backgroundColor: "var(--color-light)",
+              borderRadius: "var(--border-radius-small)",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
               maxWidth: "100%",
               zIndex: 9999,
               position: "absolute",
             }),
             menuList: (base) => ({
               ...base,
-              maxHeight: "200px", 
+              maxHeight: "200px",
               overflowY: "auto",
-              padding: "5px 0", 
+              padding: "5px 0",
               "&::-webkit-scrollbar": {
                 width: "8px",
               },
@@ -125,22 +120,34 @@ export const MultiSelectFilter = ({
                 borderRadius: "var(--border-radius-small)",
               },
             }),
-            option: (base, state) => ({
-              ...base,
-              display: "flex",
-              alignItems: "center",
-              padding: "5px 10px",
-              backgroundColor: state.isSelected
-                ? "var(--color-gray-light)"
-                : state.isFocused
-                ? "var(--color-gray-light)"
-                : "transparent",
-              color: "inherit",
-              cursor: "pointer",
-              ":active": {
-                backgroundColor: "var(--color-gray)",
-              },
-            }),
+          }}
+          components={{
+            Option: ({ innerProps, isSelected, data, isFocused }) => (
+              <div
+                {...innerProps}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "5px 10px",
+                  backgroundColor: isSelected
+                    ? "var(--color-gray-light)"
+                    : isFocused
+                    ? "var(--color-gray-light)"
+                    : "transparent",
+                  color: "inherit",
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={isSelected}
+                  onChange={() => {}}
+                  style={{ padding: "0" }}
+                />
+                <span>{data.label}</span>
+              </div>
+            ),
           }}
         />
       </StyledSelectWrapper>

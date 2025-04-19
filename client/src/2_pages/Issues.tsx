@@ -97,7 +97,7 @@ const TaskList = styled.div`
   gap: 20px;
   flex-grow: 1;
 
-  padding: 30px;
+  padding: var(--content-container-padding-x);
 
   background-color: var(--color-gray-light);
   border-radius: var(--border-radius);

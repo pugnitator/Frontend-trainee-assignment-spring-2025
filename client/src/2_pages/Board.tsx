@@ -127,7 +127,7 @@ export const Board = () => {
       </BoardContainer>
       {isModalOpen && selectedTask && (
         <Modal>
-          <TaskForm task={selectedTask} onClose={() => onCloseForm()} refetchList={refetch} />
+          <TaskForm task={selectedTask} boardId={boardId} onClose={() => onCloseForm()} />
         </Modal>
       )}
     </PageContentContainer>

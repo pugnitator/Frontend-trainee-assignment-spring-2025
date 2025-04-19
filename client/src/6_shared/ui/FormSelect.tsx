@@ -20,7 +20,7 @@ export const FormSelect = ({
   name,
   control,
   rules,
-  isDisabled
+  isDisabled,
 }: FormSelectProp) => {
   return (
     <Container>
@@ -47,9 +47,9 @@ export const FormSelect = ({
                 control: (base, state) => ({
                   ...base,
                   width: "100%",
-                  alignContent: 'center',
-                  maxHeight: '40px',
-                  lineHeight: '1px',
+                  alignContent: "center",
+                  maxHeight: "40px",
+                  lineHeight: "1px",
                   padding: "5px",
                   backgroundColor: "var(--color-light)",
                   borderColor: state.isFocused
@@ -83,36 +83,20 @@ export const FormSelect = ({
                     borderRadius: "var(--border-radius-small)",
                   },
                 }),
-                option: (base) => ({
+                option: (base, state) => ({
                   ...base,
                   display: "flex",
                   width: "100%",
                   alignItems: "center",
-                  padding: "5px",
-                  backgroundColor: "transparent",
+                  padding: "5px 10px",
+                  backgroundColor: "var(--color-light)",
+                  color: "inherit",
                   cursor: "pointer",
+                  ":hover": {
+                    backgroundColor: "var(--color-gray-light)",
+                    cursor: "pointer",
+                  },
                 }),
-              }}
-              components={{
-                Option: ({ innerProps, isSelected, data }) => (
-                  <div
-                    {...innerProps}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      width: "100%",
-                      padding: "5px",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={() => {}}
-                      style={{ marginRight: "8px", padding: "0" }}
-                    />
-                    <span>{(data as { label: string }).label}</span>
-                  </div>
-                ),
               }}
             />
           </StyledSelectWrapper>
