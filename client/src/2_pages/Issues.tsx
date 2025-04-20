@@ -75,14 +75,14 @@ export const Issues = () => {
           ))
         ) : (
           <ContentWrapper>
-            <Loader />
+            <Loader isError={hasError}/>
           </ContentWrapper>
         )}
         {}
       </TaskList>
       {isModalOpen && selectedTask && (
         <Modal>
-          <TaskForm task={selectedTask} onClose={onCloseForm} />
+          <TaskForm task={selectedTask} onClose={onCloseForm} boardId={selectedTask.boardId}/>
         </Modal>
       )}
     </PageContentContainer>

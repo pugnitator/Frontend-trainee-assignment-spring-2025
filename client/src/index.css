@@ -16,7 +16,7 @@
 
 body {
   font-family: "Nunito", sans-serif;
-  font-size: 16px;
+  font-size: var(--font-size);
   font-weight: 500;
   color: var(--color-dark);
   background-color: var(--color-light);
@@ -28,6 +28,13 @@ body {
   align-items: center;
   width: 100%;
   min-height: 100vh;
+}
+
+h1{
+  font-size: var(--h1-size);
+}
+h2{
+  font-size: var(--h2-size);
 }
 
 ul {
@@ -60,6 +67,7 @@ button {
   min-width: 100px;
   border: none;
   white-space: nowrap;
+  background-color: var(--color-gray-light);
 
   &:hover {
     opacity: 80%;

@@ -11,6 +11,7 @@ import { ROUTES } from "../1_app/routes";
 export const Boards = () => {
   const boards = useSelector((state: RootState) => state.boards.list);
   const isBoardsLoad = useSelector((state: RootState) => state.boards.isLoad);
+  const hasError = useSelector((state: RootState) => state.boards.hasError);
   const navigate = useNavigate()
 
   const onClickBoard = (id: BoardId) => {
@@ -28,7 +29,7 @@ export const Boards = () => {
             ))}
           </BoardsList>
         ) : (
-          <Loader />
+          <Loader isError={hasError}/>
         )}
       </ContentWrapper>
     </PageContentContainer>
@@ -38,7 +39,7 @@ export const Boards = () => {
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   flex-grow: 1;
   width: 100%;

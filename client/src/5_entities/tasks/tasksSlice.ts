@@ -24,6 +24,7 @@ const tasksSlice = createSlice({
       })
       .addCase(getTasks.rejected, (state) => {
         state.isLoad = false;
+        state.hasError = true;
       })
   },
 });

@@ -87,28 +87,35 @@ export const SearchTaskBar = ({
             placeholder="Поиск"
             value={searchValue ?? ""}
             onChange={() => setSearchValue(searchRef.current?.value ?? "")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                onSearch();
+              }
+            }}
           />
-          {searchValue && (
-            <ImageButton type="button" onClick={onCancelSearch}>
+          <ButtonWrapper>
+            {searchValue && (
+              <ImageButton type="button" onClick={onCancelSearch}>
+                <img
+                  src={closeIcon}
+                  alt="Отменить поиск"
+                  width="20px"
+                  height="20px"
+                  loading="lazy"
+                />
+              </ImageButton>
+            )}
+            <ImageButton type="button" onClick={onSearch}>
               <img
-                src={closeIcon}
-                alt="Отменить поиск"
-                width="20px"
-                height="20px"
+                src={searchIcon}
+                alt="Начать поиск"
+                width="25px"
+                height="25px"
                 loading="lazy"
               />
             </ImageButton>
-          )}
+          </ButtonWrapper>
         </InputWrapper>
-        <ImageButton type="button" onClick={onSearch}>
-          <img
-            src={searchIcon}
-            alt="Начать поиск"
-            width="25px"
-            height="25px"
-            loading="lazy"
-          />
-        </ImageButton>
       </Wrapper>
     </Container>
   );
@@ -135,7 +142,7 @@ const Container = styled.div`
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: stretch;
   gap: 10px;
 
   min-width: 300px;
@@ -145,15 +152,19 @@ const Wrapper = styled.div`
   @media (max-width: 870px) {
     width: 100%;
   }
+  @media (max-width: 500px) {
+    flex-direction: column;
+  }
 `;
 
 const InputWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 5px;
+  justify-content: start;
+  padding: 0 5px 0 0;
 
-  width: calc(100% - 25px);
+  width: 100%;
+  height: 32px;
   background-color: var(--color-light);
   border-radius: var(--border-radius-small);
   border: 1px solid transparent;
@@ -175,11 +186,18 @@ const ImageButton = styled.button`
   min-width: 1px;
   min-height: 1px;
   background-color: transparent;
-  padding: 0;
+  padding: 0 5px;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 5px;
 `;
 
 const SearchInput = styled.input`
-  width: calc(100% - 20px); // 20px - ширина кратинки крестика
+  width: 100%;
   border: none;
   &:focus {
     border: none;

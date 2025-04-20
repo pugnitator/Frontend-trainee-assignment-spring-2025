@@ -3,6 +3,7 @@ import { boardsInitialState } from "./model/boardsInitialState";
 import { IBoard } from "./model/IBoard";
 import { getBoards } from "./api/getBoards";
 import { getBoardTasks } from "./api/getBoardTasks";
+import { act } from "react";
 
 const boardsSlice = createSlice({
   name: "boards",
@@ -14,7 +15,13 @@ const boardsSlice = createSlice({
     },
     setCurrentBoardList(state, action) {
       state.currentBoardTaskList = action.payload
-    }
+    },
+    setSelectedTask(state, action) {
+      state.selectedTask = action.payload ?? null
+    },
+    clearSelectedTask(state) {
+      state.selectedTask = null
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -27,6 +34,7 @@ const boardsSlice = createSlice({
       })
       .addCase(getBoards.rejected, (state) => {
         state.isLoad = false;
+        state.hasError = true;
       })
       .addCase(getBoardTasks.fulfilled, (state, action) => {
         state.currentBoardTaskList = action.payload;

@@ -1,9 +1,13 @@
 import styled from "styled-components";
 
-const Loader = () => {
+interface LoaderProp {
+  isError: boolean;
+}
+
+const Loader = ({ isError }: LoaderProp) => {
   return (
     <Container>
-      <Text>Загрузка</Text>
+      <Text>{isError ? 'Ошибка загрузки' : "Загрузка"}</Text>
     </Container>
   );
 };

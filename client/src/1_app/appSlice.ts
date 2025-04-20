@@ -2,10 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface AppState {
   isModalOpen: boolean;
+  isHeaderModalOpen: boolean;
 }
 
 const appInitialState: AppState = {
   isModalOpen: false,
+  isHeaderModalOpen: false,
 };
 
 const appSlice = createSlice({
@@ -17,6 +19,12 @@ const appSlice = createSlice({
     },
     closeModal(state) {
       state.isModalOpen = false;
+    },
+    openHeaderModal(state) {
+      state.isHeaderModalOpen = true;
+    },
+    closeHeaderModal(state) {
+      state.isHeaderModalOpen = false;
     },
   },
 });

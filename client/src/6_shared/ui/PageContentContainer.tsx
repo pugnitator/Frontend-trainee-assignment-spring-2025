@@ -21,8 +21,9 @@ const Container = styled.main`
 
   flex-grow: 1;
 
-  padding: 50px var(--content-container-padding-x);
+  padding: 30px var(--content-container-padding-x);
   width: 100%;
   max-width: 1280px;
+  min-width: 360px;
   height: 100%;
 `;

@@ -18,13 +18,18 @@ export const TaskCard = ({
   isShortCard = true,
   onClick,
 }: TaskCardProp) => {
-  const { title, description, status } = task;
+  const { title, description, status, assignee } = task;
   const maxLength = isShortCard ? 80 : 150;
   return (
     <Card isShortCard={isShortCard} onClick={() => onClick(task)}>
       <TitleWrapper>
         <span>{title}</span>
-        {!isShortCard && <TaskStatus status={status} />}
+        {!isShortCard && (
+          <Info>
+            <Assignee>{assignee.fullName}</Assignee>
+            <TaskStatus status={status} />
+          </Info>
+        )}
       </TitleWrapper>
       <Description>
         {truncateText({ text: description, maxLength: maxLength })}
@@ -38,6 +43,7 @@ const Card = styled.article<CardProp>`
   flex-direction: column;
   justify-content: center;
   align-items: start;
+  gap: 5px;
 
   min-height: ${(props) => (props.isShortCard ? "80px" : "60px")};
   width: 100%;
@@ -53,16 +59,34 @@ const Card = styled.article<CardProp>`
   }
 `;
 
+const Info = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  gap: 5px;
+`;
+
+const Assignee = styled.span`
+  font-size: var(--font-size-small);
+  color: var(--color-gray);
+`;
+
 const TitleWrapper = styled.div`
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: start;
   gap: 5px;
 
   width: 100%;
+
+  @media (max-width: 700px) {
+    flex-direction: column;
+  }
 `;
 
 const Description = styled.span`
-  font-size: 14px;
+  font-size: var(--font-size-small);
   color: var(--color-gray);
 `;

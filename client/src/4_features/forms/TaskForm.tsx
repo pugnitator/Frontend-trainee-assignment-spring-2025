@@ -24,10 +24,11 @@ import { getUsers } from "../../5_entities/users/api/getUsers";
 import { IUser } from "../../5_entities/users/model/IUser";
 import { useEffect, useState } from "react";
 import { updateTask } from "../../5_entities/tasks/api/updateTask";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { ROUTES } from "../../1_app/routes";
 import closeIcon from "../../assets/icons/closeIcon.svg";
 import { getBoardTasks } from "../../5_entities/boards/api/getBoardTasks";
+import { boardsSliceActions } from "../../5_entities/boards/boardsSlice";
 
 interface TaskFormProp {
   task?: ITask;
@@ -36,15 +37,18 @@ interface TaskFormProp {
 }
 
 export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
+  console.log('form task', task);
+
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const dispatch = useAppDispatch();
   const { refetch } = useTasks();
   const navigate = useNavigate();
+  const location = useLocation();
   const form = useForm<CreateTaskProp>({
     defaultValues: {
       title: task?.title || "",
       description: task?.description || "",
-      boardId: task?.boardId || 0,
+      boardId: task?.boardId || boardId || 0,
       priority: task?.priority || TaskPriorityEnum.Medium,
       assigneeId: task?.assignee.id || 0,
       status: task?.status || TaskStatusEnum.Backlog,
@@ -99,6 +103,7 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
       });
       return;
     }
+    dispatch(boardsSliceActions.setSelectedTask(task));
     navigate(ROUTES.BOARD.link(task.boardId));
     dispatch(appSliceActions.closeModal());
   };
@@ -112,6 +117,7 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
         style: messageVariants.success,
       });
       dispatch(appSliceActions.closeModal());
+      dispatch(appSliceActions.closeHeaderModal());
     } catch (error) {
       enqueueSnackbar("Не удалось создать задачу", {
         style: messageVariants.error,
@@ -135,15 +141,19 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
         style: messageVariants.success,
       });
       dispatch(appSliceActions.closeModal());
+      dispatch(appSliceActions.closeHeaderModal());
     } catch (error) {
       enqueueSnackbar("Не удалось обновить задачу", {
         style: messageVariants.error,
       });
       console.log(error);
+    } finally {
+      dispatch(boardsSliceActions.clearSelectedTask());
     }
   };
 
   const onSubmit = task ? onSubmitUpdate : onSubmitCreate;
+  const isBoardPage = location.pathname.includes('board/');
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
@@ -223,9 +233,9 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
       <ButtonWrapper>
         {task ? (
           <>
-            <StyledButton type="button" onClick={onClickGoToBoard}>
+            {!isBoardPage && <StyledButton type="button" onClick={onClickGoToBoard}>
               Перейти к доске
-            </StyledButton>
+            </StyledButton>}
             <SubmitButton type='submit'>Сохранить изменения</SubmitButton>
           </>
         ) : (
@@ -242,7 +252,7 @@ const StyledForm = styled.form`
   justify-content: center;
   align-items: center;
   gap: 20px;
-  width: clamp(450px, 70vw, 600px);
+  width: clamp(360px, 70vw, 600px);
   min-width: 360px;
   padding: var(--content-container-padding-x);
   border-radius: var(--border-radius);
@@ -253,11 +263,16 @@ const StyledForm = styled.form`
 const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
+  flex-direction: row;
   align-items: start;
   justify-content: center;
   gap: 20px;
   padding: 10px 0 0;
   color: var(--color-light);
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
 `;
 
 const CancelButton = styled.button`
@@ -273,6 +288,12 @@ const CancelButton = styled.button`
   padding: 0 30px;
 
   background-color: transparent;
+
+  @media (max-width: 600px) {
+    top: 0px;
+    right: 0px;
+    padding: 0 20px;
+  }
 `;
 
 const SubmitButton = styled.button`

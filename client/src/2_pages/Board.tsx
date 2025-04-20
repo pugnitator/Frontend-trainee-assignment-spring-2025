@@ -16,6 +16,7 @@ import { enqueueSnackbar } from "notistack";
 import { messageVariants } from "../6_shared/config/notificationStyles";
 import { useBoardTasks } from "../5_entities/tasks/hooks/useBoardTasks";
 import Loader from "../6_shared/ui/Loader";
+import { boardsSliceActions } from "../5_entities/boards/boardsSlice";
 
 interface BoardTaskList {
   backlog: ITask[];
@@ -28,8 +29,11 @@ export const Board = () => {
   const board = useSelector((state: RootState) =>
     state.boards.list.find((item: IBoard) => item.id === boardId)
   );
-
+  const taskError = useSelector((state: RootState) => state.tasks.hasError);
   const { tasks, isLoad, hasError, refetch } = useBoardTasks({ boardId });
+  const taskFromIssues = useSelector(
+    (state: RootState) => state.boards.selectedTask
+  );
 
   const [taskList, setTaskList] = useState<BoardTaskList>({
     backlog: [],
@@ -38,6 +42,9 @@ export const Board = () => {
   });
 
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<TaskStatusEnum>(
+    TaskStatusEnum.Backlog
+  );
   const isModalOpen = useSelector((state: RootState) => state.app.isModalOpen);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -84,7 +91,14 @@ export const Board = () => {
     invalid.forEach((task) => {
       console.log(`Неверный статус у задачи ${task.id}`);
     });
-  }, [tasks, isLoad, hasError]);
+
+    if (taskFromIssues) {
+      console.log("taskFromIssues:", taskFromIssues);
+      dispatch(appSliceActions.openModal());
+    }
+  }, [tasks, isLoad, hasError, taskFromIssues?.id]);
+
+  console.log("render taskFromIssues:", taskFromIssues);
 
   const onClickTask = (task: ITask) => {
     setSelectedTask(task);
@@ -94,40 +108,79 @@ export const Board = () => {
   const onCloseForm = () => {
     setSelectedTask(null);
     dispatch(appSliceActions.closeModal());
+    dispatch(boardsSliceActions.clearSelectedTask());
   };
 
   return (
     <PageContentContainer>
       <h1>{board?.name}</h1>
+      <ButtonWrapper>
+        <MenuButton
+          type="button"
+          onClick={() => setSelectedStatus(TaskStatusEnum.Backlog)}
+        >
+          Backlog
+        </MenuButton>
+        <MenuButton
+          type="button"
+          onClick={() => setSelectedStatus(TaskStatusEnum.InProgress)}
+        >
+          In progress
+        </MenuButton>
+        <MenuButton
+          type="button"
+          onClick={() => setSelectedStatus(TaskStatusEnum.Done)}
+        >
+          Done
+        </MenuButton>
+      </ButtonWrapper>
       <BoardContainer>
         {isLoad ? (
           <>
-            <Column>
+            <Column isHidden={selectedStatus !== TaskStatusEnum.Backlog}>
               <h2>Backlog</h2>
-              {taskList.backlog.map((item: ITask) => (
-                <TaskCard task={item} onClick={onClickTask} />
-              ))}
+              {taskList.backlog.length > 0 ? (
+                taskList.backlog.map((item: ITask) => (
+                  <TaskCard task={item} onClick={onClickTask} />
+                ))
+              ) : (
+                <StyledSpan>Нет задач</StyledSpan>
+              )}
             </Column>
-            <Column>
+            <Column isHidden={selectedStatus !== TaskStatusEnum.InProgress}>
               <h2>In progress</h2>
-              {taskList.inProgress.map((item: ITask) => (
-                <TaskCard task={item} onClick={onClickTask} />
-              ))}
+              {taskList.inProgress.length > 0 ? (
+                taskList.inProgress.map((item: ITask) => (
+                  <TaskCard task={item} onClick={onClickTask} />
+                ))
+              ) : (
+                <StyledSpan>Нет задач</StyledSpan>
+              )}
             </Column>
-            <Column>
+            <Column isHidden={selectedStatus !== TaskStatusEnum.Done}>
               <h2>Done</h2>
-              {taskList.done.map((item: ITask) => (
-                <TaskCard task={item} onClick={onClickTask} />
-              ))}
+              {taskList.done.length > 0 ? (
+                taskList.done.map((item: ITask) => (
+                  <TaskCard task={item} onClick={onClickTask} />
+                ))
+              ) : (
+                <StyledSpan>Нет задач</StyledSpan>
+              )}
             </Column>
           </>
         ) : (
-          <Loader />
+          <Loader isError={taskError || hasError} />
         )}
       </BoardContainer>
-      {isModalOpen && selectedTask && (
+      {isModalOpen && (taskFromIssues || selectedTask) && (
         <Modal>
-          <TaskForm task={selectedTask} boardId={boardId} onClose={() => onCloseForm()} />
+          <TaskForm
+            task={(taskFromIssues || selectedTask) ?? undefined}
+            boardId={
+              boardId || selectedTask?.boardId || taskFromIssues?.boardId
+            }
+            onClose={() => onCloseForm()}
+          />
         </Modal>
       )}
     </PageContentContainer>
@@ -145,7 +198,36 @@ const BoardContainer = styled.div`
   min-height: 100%;
 `;
 
-const Column = styled.section`
+const StyledSpan = styled.span`
+  color: var(--color-gray);
+`;
+
+const ButtonWrapper = styled.div`
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+
+  @media (max-width: 700px) {
+    display: flex;
+  }
+`;
+
+const MenuButton = styled.button`
+  width: 100%;
+  border: 1px solid transparent;
+
+  &:focus {
+    border: 1px solid var(--color-blue);
+  }
+`;
+
+interface ColumnProp {
+  isHidden: boolean;
+}
+
+const Column = styled.section<ColumnProp>`
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -158,4 +240,8 @@ const Column = styled.section`
 
   background-color: var(--color-gray-light);
   border-radius: var(--border-radius);
+
+  @media (max-width: 700px) {
+    display: ${(props) => (props.isHidden ? "none" : "flex")};
+  }
 `;

@@ -15,7 +15,6 @@ export const HeaderMenuItem = ({ text, path }: HeaderMenuItemProp) => {
 };
 
 const Item = styled.li`
-  padding: 10px 10px;
   font-weight: 700;
 `;
 
