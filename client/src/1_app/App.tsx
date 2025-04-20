@@ -12,7 +12,8 @@ import { useTasks } from "../5_entities/tasks/hooks/useTasks";
 
 function App() {
   const dispatch = useAppDispatch();
-  const {tasks} = useTasks();
+  //запрашиваю задачи, чтобы обновить стейт до перехода на страницу задач, чтобы к ним был доступ при переходе к доске
+  const {tasks} = useTasks(); 
   
   useEffect(() => {
     dispatch(getBoards());

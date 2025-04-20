@@ -37,8 +37,6 @@ interface TaskFormProp {
 }
 
 export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
-  console.log('form task', task);
-
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const dispatch = useAppDispatch();
   const { refetch } = useTasks();
@@ -122,7 +120,6 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
       enqueueSnackbar("Не удалось создать задачу", {
         style: messageVariants.error,
       });
-      console.log(error);
     }
   };
 
@@ -146,7 +143,6 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
       enqueueSnackbar("Не удалось обновить задачу", {
         style: messageVariants.error,
       });
-      console.log(error);
     } finally {
       dispatch(boardsSliceActions.clearSelectedTask());
     }

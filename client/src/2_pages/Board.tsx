@@ -66,8 +66,6 @@ export const Board = () => {
       return;
     }
 
-    console.log("boardTasks2", tasks);
-
     const backlog: ITask[] = [];
     const inProgress: ITask[] = [];
     const done: ITask[] = [];
@@ -85,20 +83,15 @@ export const Board = () => {
       }
     });
 
-    console.log("boardTasks3", { backlog, inProgress, done });
-
     setTaskList({ backlog, inProgress, done });
     invalid.forEach((task) => {
       console.log(`Неверный статус у задачи ${task.id}`);
     });
 
     if (taskFromIssues) {
-      console.log("taskFromIssues:", taskFromIssues);
       dispatch(appSliceActions.openModal());
     }
   }, [tasks, isLoad, hasError, taskFromIssues?.id]);
-
-  console.log("render taskFromIssues:", taskFromIssues);
 
   const onClickTask = (task: ITask) => {
     setSelectedTask(task);
