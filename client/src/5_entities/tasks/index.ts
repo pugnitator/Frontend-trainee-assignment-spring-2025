@@ -9,4 +9,6 @@ export type { CreateTaskProp } from "./api/createTask";
 export { TaskStatusEnum, TaskPriorityEnum } from "./model/ITask";
 export { tasksInitialState } from "./model/tasksInitialState";
 export { TaskCard } from "./ui/TaskCard";
-export {tasksSliceActions, tasksReducer} from './tasksSlice';
+export { tasksSliceActions, tasksReducer } from "./tasksSlice";
+export { DraggableTask } from "./ui/DraggableTask";
+export { updateTaskStatus } from "./api/updateTaskStatus";

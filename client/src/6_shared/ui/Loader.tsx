@@ -7,13 +7,14 @@ interface LoaderProp {
 export const Loader = ({ isError }: LoaderProp) => {
   return (
     <Container>
-      <Text>{isError ? 'Ошибка загрузки' : "Загрузка"}</Text>
+      <Text>{isError ? "Ошибка загрузки" : "Загрузка"}</Text>
     </Container>
   );
 };
 
 const Container = styled.div`
   display: flex;
+  height: 100%;
   flex-direction: column;
   align-items: center;
   font-weight: 700;

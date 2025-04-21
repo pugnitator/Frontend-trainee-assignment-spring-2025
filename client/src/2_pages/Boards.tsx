@@ -20,7 +20,7 @@ export const Boards = () => {
   return (
     <PageContentContainer>
       <h1 className="visually-hidden">Список проектов</h1>
-      <ContentWrapper>
+      <ContentWrapper isLoad={hasError ?? isBoardsLoad}>
         {isBoardsLoad ? (
           <BoardsList>
             {boards.map((item: IBoard) => (
@@ -35,13 +35,14 @@ export const Boards = () => {
   );
 };
 
-const ContentWrapper = styled.div`
+const ContentWrapper = styled.div<{isLoad: boolean}>`
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: ${props => (props.isLoad) ? 'center' : 'start'};
   align-items: center;
   flex-grow: 1;
   width: 100%;
+  height: 100%;
 `;
 
 const BoardsList = styled.ul`
