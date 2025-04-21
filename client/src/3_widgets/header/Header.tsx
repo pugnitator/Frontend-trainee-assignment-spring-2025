@@ -1,15 +1,14 @@
 import styled from "styled-components";
-import { HeaderMenuItem } from "./HeaderMenuItem";
-import { ROUTES } from "../../1_app/routes";
-import { Modal } from "../modals/Modal";
-import { useSelector } from "react-redux";
-import { RootState } from "../../5_entities/store";
-import { useAppDispatch } from "../../6_shared/hooks/useAppDispatch";
-import { appSliceActions } from "../../1_app/appSlice";
-import { TaskForm } from "../../4_features/forms/TaskForm";
 import { useLocation } from "react-router";
 import { enqueueSnackbar } from "notistack";
-import { messageVariants } from "../../6_shared/config/notificationStyles";
+import { useSelector } from "react-redux";
+import { HeaderMenuItem } from "./HeaderMenuItem";
+import { ROUTES } from "@/1_app/routes";
+import { Modal } from "../modals/Modal";
+import { RootState } from "@/5_entities/store";
+import { useAppDispatch, messageVariants } from "@/6_shared/index";
+import { appSliceActions } from "@/1_app/appSlice";
+import { TaskForm } from "@/4_features/forms/TaskForm";
 
 export const Header = () => {
   const isModalOpen = useSelector((state: RootState) => state.app.isHeaderModalOpen);

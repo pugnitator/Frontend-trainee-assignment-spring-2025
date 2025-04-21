@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BoardId } from "./useTasks";
 import { ITask } from "../model/ITask";
 import { getBoardTasks } from "../../boards/api/getBoardTasks";
-import { useAppDispatch } from "../../../6_shared/hooks/useAppDispatch";
+import { useAppDispatch } from "@/6_shared/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 

@@ -1,13 +1,12 @@
 import styled from "styled-components";
-import { BoardId } from "../5_entities/tasks/hooks/useTasks";
 import { useRef, useState } from "react";
-import { TaskStatusEnum } from "../5_entities/tasks/model/ITask";
-import closeIcon from "../assets/icons/closeIcon.svg";
-import searchIcon from "../assets/icons/searchIcon.svg";
 import { useSelector } from "react-redux";
-import { RootState } from "../5_entities/store";
-import { IBoard } from "../5_entities/boards/model/IBoard";
-import { MultiSelectFilter } from "../6_shared/ui/MultiSelectFilter";
+import { BoardId, TaskStatusEnum } from "@/5_entities/tasks/index";
+import { RootState } from "@/5_entities/store";
+import { IBoard } from "@/5_entities/boards/index";
+import { MultiSelectFilter } from "@/6_shared/index";
+import closeIcon from "@/assets/icons/closeIcon.svg";
+import searchIcon from "@/assets/icons/searchIcon.svg";
 
 interface SearchTaskBarProp {
   searchTask: (text: string | undefined) => void;

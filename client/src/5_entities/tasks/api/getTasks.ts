@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { api } from "../../../1_app/axios config/api";
+import { api } from "@/1_app/axios config/api";
 import { ITask } from "../model/ITask";
 
 export const getTasks = createAsyncThunk<

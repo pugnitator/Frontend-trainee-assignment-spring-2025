@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { TaskStatusEnum } from "../../5_entities/tasks/model/ITask";
+import { TaskStatusEnum } from "@/5_entities/tasks/model/ITask";
 
 const statusTheme: Record<TaskStatusEnum, string> = {
   [TaskStatusEnum.Backlog]: "var(--color-gray)",

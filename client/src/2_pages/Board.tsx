@@ -1,22 +1,15 @@
 import styled from "styled-components";
-import { PageContentContainer } from "../6_shared/ui/PageContentContainer";
-import { TaskCard } from "../5_entities/tasks/ui/TaskCard";
-import { ITask, TaskStatusEnum } from "../5_entities/tasks/model/ITask";
 import { useSelector } from "react-redux";
-import { RootState } from "../5_entities/store";
 import { useEffect, useRef, useState } from "react";
-import { useAppDispatch } from "../6_shared/hooks/useAppDispatch";
-import { appSliceActions } from "../1_app/appSlice";
-import { Modal } from "../3_widgets/modals/Modal";
-import { TaskForm } from "../4_features/forms/TaskForm";
 import { useNavigate, useParams } from "react-router";
-import { IBoard } from "../5_entities/boards/model/IBoard";
-import { BoardId } from "../5_entities/tasks/hooks/useTasks";
 import { enqueueSnackbar } from "notistack";
-import { messageVariants } from "../6_shared/config/notificationStyles";
-import { useBoardTasks } from "../5_entities/tasks/hooks/useBoardTasks";
-import Loader from "../6_shared/ui/Loader";
-import { boardsSliceActions } from "../5_entities/boards/boardsSlice";
+import { PageContentContainer, useAppDispatch, messageVariants, Loader} from "@/6_shared/index";
+import { TaskCard, ITask, TaskStatusEnum, BoardId, useBoardTasks} from "@/5_entities/tasks/index";
+import { RootState } from "@/5_entities/store";
+import { appSliceActions } from "@/1_app/appSlice";
+import { Modal } from "@/3_widgets/index";
+import { TaskForm } from "@/4_features/forms/TaskForm";
+import { IBoard, boardsSliceActions } from "@/5_entities/boards/index";
 
 interface BoardTaskList {
   backlog: ITask[];
@@ -66,8 +59,6 @@ export const Board = () => {
       return;
     }
 
-    console.log("boardTasks2", tasks);
-
     const backlog: ITask[] = [];
     const inProgress: ITask[] = [];
     const done: ITask[] = [];
@@ -85,20 +76,15 @@ export const Board = () => {
       }
     });
 
-    console.log("boardTasks3", { backlog, inProgress, done });
-
     setTaskList({ backlog, inProgress, done });
-    invalid.forEach((task) => {
-      console.log(`Неверный статус у задачи ${task.id}`);
-    });
+    // invalid.forEach((task) => {
+    //   console.log(`Неверный статус у задачи ${task.id}`);
+    // });
 
     if (taskFromIssues) {
-      console.log("taskFromIssues:", taskFromIssues);
       dispatch(appSliceActions.openModal());
     }
   }, [tasks, isLoad, hasError, taskFromIssues?.id]);
-
-  console.log("render taskFromIssues:", taskFromIssues);
 
   const onClickTask = (task: ITask) => {
     setSelectedTask(task);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ITask } from "../model/ITask";
-import { useAppDispatch } from "../../../6_shared/hooks/useAppDispatch";
+import { useAppDispatch } from "@/6_shared/hooks/useAppDispatch";
 import { getTasks } from "../api/getTasks";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";

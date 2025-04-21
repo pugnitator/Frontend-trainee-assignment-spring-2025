@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { SyntheticEvent } from "react";
-import { appSliceActions } from "../../1_app/appSlice";
-import { useAppDispatch } from "../../6_shared/hooks/useAppDispatch";
+import { appSliceActions } from "@/1_app/appSlice";
+import { useAppDispatch } from "@/6_shared/index";
 
 interface ModalProp {
   children: React.ReactNode;
@@ -9,9 +9,10 @@ interface ModalProp {
 
 export const Modal = ({ children }: ModalProp) => {
   const dispatch = useAppDispatch();
+
   return (
-    <ModalConteiner onClick={() => dispatch(appSliceActions.closeModal())}>
-      <ModalContent onClick={(e: SyntheticEvent) => e.stopPropagation()}>
+    <ModalConteiner onMouseDown={() => dispatch(appSliceActions.closeModal())}>
+      <ModalContent onMouseDown={(e: SyntheticEvent) => e.stopPropagation()}>
         {children}
       </ModalContent>
     </ModalConteiner>

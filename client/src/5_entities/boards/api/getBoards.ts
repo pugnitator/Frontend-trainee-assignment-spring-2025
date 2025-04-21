@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { api } from "../../../1_app/axios config/api";
+import { api } from "@/1_app/axios config/api";
 import { IBoard } from "../model/IBoard";
 import { enqueueSnackbar } from "notistack";
-import { messageVariants } from "../../../6_shared/config/notificationStyles";
+import { messageVariants } from "@/6_shared/config/notificationStyles";
 
 export const getBoards = createAsyncThunk<
   IBoard[],

@@ -1,6 +1,6 @@
 import { enqueueSnackbar } from "notistack";
-import { messageVariants } from "../../../6_shared/config/notificationStyles";
-import { api } from "../../../1_app/axios config/api";
+import { messageVariants } from "@/6_shared/config/notificationStyles";
+import { api } from "@/1_app/axios config/api";
 
 export const getUsers = async () => {
   const cached = sessionStorage.getItem("users");
@@ -15,7 +15,6 @@ export const getUsers = async () => {
     enqueueSnackbar("Не удалось получить список ответственных", {
       style: messageVariants.error,
     });
-    console.log(error);
     return null;
   }
 };

@@ -4,7 +4,7 @@ interface LoaderProp {
   isError: boolean;
 }
 
-const Loader = ({ isError }: LoaderProp) => {
+export const Loader = ({ isError }: LoaderProp) => {
   return (
     <Container>
       <Text>{isError ? 'Ошибка загрузки' : "Загрузка"}</Text>
@@ -34,5 +34,3 @@ const Text = styled.span`
     }
   }
 `;
-
-export default Loader;
