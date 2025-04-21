@@ -13,7 +13,6 @@ export interface FormInputProp {
 
 export const FormInput = ({
   register,
-  title,
   placeholder,
   type,
   errorMessage,
@@ -21,7 +20,6 @@ export const FormInput = ({
 }: FormInputProp) => {
   return (
     <Container>
-      {/* <label>{title}</label> */}
       <StyledInput
         {...register}
         type={type ?? "text"}

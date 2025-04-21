@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { ITask } from "../model/ITask";
-import { truncateText } from "../../../6_shared/utils/truncateText";
-import { TaskStatus } from "../../../6_shared/ui/TaskStatus";
+import { truncateText, TaskStatus } from "@/6_shared/index";
 
 interface TaskCardProp {
   task: ITask;

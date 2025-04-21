@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Select from "react-select";
 
-export interface MultiSelectFilterProp {
+interface MultiSelectFilterProp {
   options: { value: string | number; label: string }[];
   name: string;
   placeHolder: string;

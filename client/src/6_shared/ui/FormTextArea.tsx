@@ -3,13 +3,11 @@ import styled from "styled-components";
 
 export const FormTextarea = ({
   register,
-  title,
   placeholder,
   errorMessage,
 }: FormInputProp) => {
   return (
     <Container>
-      {/* <label>{title}</label> */}
       <StyledTextArea
         autoComplete="off"
         readOnly={false}

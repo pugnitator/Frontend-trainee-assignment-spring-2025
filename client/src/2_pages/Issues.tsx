@@ -1,19 +1,14 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
-import { PageContentContainer } from "../6_shared/ui/PageContentContainer";
-import { ITask } from "../5_entities/tasks/model/ITask";
-import { TaskCard } from "../5_entities/tasks/ui/TaskCard";
-import { useTasks } from "../5_entities/tasks/hooks/useTasks";
-import { Modal } from "../3_widgets/modals/Modal";
-import { TaskForm } from "../4_features/forms/TaskForm";
-import { useAppDispatch } from "../6_shared/hooks/useAppDispatch";
 import { useSelector } from "react-redux";
-import { RootState } from "../5_entities/store";
-import { appSliceActions } from "../1_app/appSlice";
-import { SearchTaskBar } from "../4_features/SearchTaskBar";
-import Loader from "../6_shared/ui/Loader";
 import { enqueueSnackbar } from "notistack";
-import { messageVariants } from "../6_shared/config/notificationStyles";
+import { PageContentContainer, messageVariants, useAppDispatch, Loader } from "@/6_shared/index";
+import { ITask, TaskCard, useTasks } from "@/5_entities/tasks/index";
+import { Modal } from "@/3_widgets/index";
+import { TaskForm, SearchTaskBar } from "@/4_features/index";
+import { RootState } from "@/5_entities/store";
+import { appSliceActions } from "@/1_app/appSlice";
+
 
 export const Issues = () => {
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);

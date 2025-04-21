@@ -1,34 +1,36 @@
 import { useForm } from "react-hook-form";
+import styled from "styled-components";
+import { enqueueSnackbar } from "notistack";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import closeIcon from "@/assets/icons/closeIcon.svg";
 import {
   ITask,
   TaskPriorityEnum,
   TaskStatusEnum,
-} from "../../5_entities/tasks/model/ITask";
-import styled from "styled-components";
-import { BoardId, useTasks } from "../../5_entities/tasks/hooks/useTasks";
-import { enqueueSnackbar } from "notistack";
-import { useAppDispatch } from "../../6_shared/hooks/useAppDispatch";
-import {
   createTask,
+  updateTask,
+  BoardId,
+  useTasks,
   CreateTaskProp,
-} from "../../5_entities/tasks/api/createTask";
-import { messageVariants } from "../../6_shared/config/notificationStyles";
-import { FormInput } from "../../6_shared/ui/FormInput";
-import { FormTextarea } from "../../6_shared/ui/FormTextArea";
-import { FormSelect } from "../../6_shared/ui/FormSelect";
-import { useSelector } from "react-redux";
-import { RootState } from "../../5_entities/store";
-import { IBoard } from "../../5_entities/boards/model/IBoard";
-import { appSliceActions } from "../../1_app/appSlice";
-import { getUsers } from "../../5_entities/users/api/getUsers";
-import { IUser } from "../../5_entities/users/model/IUser";
-import { useEffect, useState } from "react";
-import { updateTask } from "../../5_entities/tasks/api/updateTask";
-import { useLocation, useNavigate } from "react-router";
-import { ROUTES } from "../../1_app/routes";
-import closeIcon from "../../assets/icons/closeIcon.svg";
-import { getBoardTasks } from "../../5_entities/boards/api/getBoardTasks";
-import { boardsSliceActions } from "../../5_entities/boards/boardsSlice";
+} from "@/5_entities/tasks/index";
+import {
+  useAppDispatch,
+  messageVariants,
+  FormInput,
+  FormTextarea,
+  FormSelect,
+} from "@/6_shared/index";
+import { RootState } from "@/5_entities/store";
+import {
+  IBoard,
+  getBoardTasks,
+  boardsSliceActions,
+} from "@/5_entities/boards/index";
+import { appSliceActions } from "@/1_app/appSlice";
+import { IUser, getUsers } from "@/5_entities/users/index";
+import { ROUTES } from "@/1_app/routes";
 
 interface TaskFormProp {
   task?: ITask;
@@ -109,7 +111,7 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
   const onSubmitCreate = async (data: CreateTaskProp) => {
     try {
       await dispatch(createTask(data));
-      if(boardId) dispatch(getBoardTasks(boardId));
+      if (boardId) dispatch(getBoardTasks(boardId));
       refetch();
       enqueueSnackbar("Задача успешно создана", {
         style: messageVariants.success,
@@ -132,7 +134,7 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
     }
     try {
       await dispatch(updateTask({ task: data, id: task.id }));
-      if(boardId) dispatch(getBoardTasks(boardId));
+      if (boardId) dispatch(getBoardTasks(boardId));
       refetch();
       enqueueSnackbar("Задача успешно обновлена", {
         style: messageVariants.success,
@@ -149,7 +151,7 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
   };
 
   const onSubmit = task ? onSubmitUpdate : onSubmitCreate;
-  const isBoardPage = location.pathname.includes('board/');
+  const isBoardPage = location.pathname.includes("board/");
 
   return (
     <StyledForm onSubmit={handleSubmit(onSubmit)}>
@@ -229,13 +231,15 @@ export const TaskForm = ({ task, boardId, onClose }: TaskFormProp) => {
       <ButtonWrapper>
         {task ? (
           <>
-            {!isBoardPage && <StyledButton type="button" onClick={onClickGoToBoard}>
-              Перейти к доске
-            </StyledButton>}
-            <SubmitButton type='submit'>Сохранить изменения</SubmitButton>
+            {!isBoardPage && (
+              <StyledButton type="button" onClick={onClickGoToBoard}>
+                Перейти к доске
+              </StyledButton>
+            )}
+            <SubmitButton type="submit">Сохранить изменения</SubmitButton>
           </>
         ) : (
-          <SubmitButton type='submit'>Создать</SubmitButton>
+          <SubmitButton type="submit">Создать</SubmitButton>
         )}
       </ButtonWrapper>
     </StyledForm>
@@ -300,4 +304,4 @@ const SubmitButton = styled.button`
 const StyledButton = styled.button`
   width: 100%;
   background-color: var(--color-gray);
-`
+`;

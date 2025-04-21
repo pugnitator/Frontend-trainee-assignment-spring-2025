@@ -1,12 +1,11 @@
 import styled from "styled-components";
-import { PageContentContainer } from "../6_shared/ui/PageContentContainer";
-import { IBoard } from "../5_entities/boards/model/IBoard";
 import { useSelector } from "react-redux";
-import { RootState } from "../5_entities/store";
-import Loader from "../6_shared/ui/Loader";
-import { BoardId } from "../5_entities/tasks/hooks/useTasks";
 import { useNavigate } from "react-router";
-import { ROUTES } from "../1_app/routes";
+import { PageContentContainer, Loader } from "@/6_shared/index";
+import { IBoard } from "@/5_entities/boards/index";
+import { RootState } from "@/5_entities/store";
+import { BoardId } from "@/5_entities/tasks/hooks/useTasks";
+import { ROUTES } from "@/1_app/routes";
 
 export const Boards = () => {
   const boards = useSelector((state: RootState) => state.boards.list);
