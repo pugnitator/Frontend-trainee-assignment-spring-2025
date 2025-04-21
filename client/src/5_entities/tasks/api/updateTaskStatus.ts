@@ -15,7 +15,7 @@ export const updateTaskStatus = createAsyncThunk<
   "/tasks/updateTaskStatus",
   async ({ id, status }: UpdateTaskStatusProp, { rejectWithValue }) => {
     try {
-      await api.put(`/updateStatus/${id}`, { status });
+      await api.put(`/tasks/updateStatus/${id}`, { status });
     } catch (error) {
       return rejectWithValue(
         `Ошибка Обновления статуса задачи, ${String(error)}`
