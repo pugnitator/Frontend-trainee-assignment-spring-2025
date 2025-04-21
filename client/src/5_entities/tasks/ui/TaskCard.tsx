@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { ITask } from "../model/ITask";
 import { truncateText, TaskStatus } from "@/6_shared/index";
 
-interface TaskCardProp {
+export interface TaskCardProp {
   task: ITask;
   isShortCard?: boolean;
   onClick: (task: ITask) => void;
